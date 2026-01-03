@@ -59,18 +59,18 @@ export function ScheduleSection() {
         {/* Section Header */}
         <div
           ref={headerRef}
-          className={`text-center mb-16 transition-all duration-700 ${
+          className={`text-center mb-12 transition-all duration-700 ${
             headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-accent/10 border border-accent/30 text-accent text-sm font-medium mb-4">
+          <span className="inline-block px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-3">
             Event Timeline
           </span>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-4">
+          <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl mb-3">
             Mark Your <span className="gradient-text">Calendar</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            From registration to celebration, here's everything you need to know about the hackathon schedule.
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            From registration to celebration, here's everything you need to know.
           </p>
         </div>
 
@@ -109,41 +109,41 @@ function TimelineItem({ icon: Icon, date, time, title, description, index, isLef
   return (
     <div
       ref={ref}
-      className={`relative flex items-center mb-8 last:mb-0 ${
+      className={`relative flex items-center mb-6 last:mb-0 ${
         isLeft ? "md:flex-row" : "md:flex-row-reverse"
       }`}
     >
       {/* Timeline dot */}
       <div
-        className={`absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-background border-2 border-primary transform -translate-x-1/2 z-10 transition-all duration-500 ${
-          isVisible ? "scale-100 shadow-[0_0_20px_hsl(185_100%_50%/0.5)]" : "scale-0"
+        className={`absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-primary transform -translate-x-1/2 z-10 transition-all duration-500 ${
+          isVisible ? "scale-100" : "scale-0"
         }`}
         style={{ transitionDelay: `${index * 100}ms` }}
       />
 
       {/* Content */}
       <div
-        className={`w-full md:w-1/2 pl-12 md:pl-0 transition-all duration-700 ${
+        className={`w-full md:w-1/2 pl-10 md:pl-0 transition-all duration-500 ${
           isVisible ? "opacity-100 translate-x-0" : `opacity-0 ${isLeft ? "md:-translate-x-10" : "md:translate-x-10"}`
-        } ${isLeft ? "md:pr-12 md:text-right" : "md:pl-12"}`}
+        } ${isLeft ? "md:pr-10 md:text-right" : "md:pl-10"}`}
         style={{ transitionDelay: `${index * 100 + 100}ms` }}
       >
         <div
-          className={`inline-flex items-center gap-3 p-4 rounded-xl bg-card/80 backdrop-blur-sm border border-border/50 hover:border-primary/50 hover:shadow-[0_0_30px_hsl(185_100%_50%/0.15)] transition-all duration-300 ${
+          className={`inline-flex items-center gap-3 p-4 rounded-lg bg-card border border-border hover:border-primary/30 hover:shadow-sm transition-all duration-200 ${
             isLeft ? "md:flex-row-reverse" : ""
           }`}
         >
-          <div className="p-2 rounded-lg bg-primary/10 text-primary">
-            <Icon className="w-5 h-5" />
+          <div className="p-2 rounded-md bg-primary/10 text-primary">
+            <Icon className="w-4 h-4" />
           </div>
           <div className={isLeft ? "md:text-right" : ""}>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
               <span>{date}</span>
               <span className="w-1 h-1 rounded-full bg-muted-foreground" />
               <span>{time}</span>
             </div>
-            <h3 className="font-display font-semibold text-lg">{title}</h3>
-            <p className="text-sm text-muted-foreground mt-1">{description}</p>
+            <h3 className="font-semibold">{title}</h3>
+            <p className="text-sm text-muted-foreground mt-0.5">{description}</p>
           </div>
         </div>
       </div>

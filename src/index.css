@@ -74,35 +74,25 @@
 }
 
 @layer utilities {
-  /* Neon glow effects */
+  /* Subtle glow effects */
   .glow-cyan {
-    box-shadow: 0 0 20px hsl(var(--glow-cyan) / 0.5),
-                0 0 40px hsl(var(--glow-cyan) / 0.3),
-                0 0 60px hsl(var(--glow-cyan) / 0.1);
+    box-shadow: 0 0 15px hsl(var(--glow-cyan) / 0.2);
   }
 
   .glow-purple {
-    box-shadow: 0 0 20px hsl(var(--glow-purple) / 0.5),
-                0 0 40px hsl(var(--glow-purple) / 0.3),
-                0 0 60px hsl(var(--glow-purple) / 0.1);
+    box-shadow: 0 0 15px hsl(var(--glow-purple) / 0.2);
   }
 
   .glow-magenta {
-    box-shadow: 0 0 20px hsl(var(--glow-magenta) / 0.5),
-                0 0 40px hsl(var(--glow-magenta) / 0.3),
-                0 0 60px hsl(var(--glow-magenta) / 0.1);
+    box-shadow: 0 0 15px hsl(var(--glow-magenta) / 0.2);
   }
 
   .text-glow-cyan {
-    text-shadow: 0 0 10px hsl(var(--glow-cyan) / 0.8),
-                 0 0 20px hsl(var(--glow-cyan) / 0.6),
-                 0 0 40px hsl(var(--glow-cyan) / 0.4);
+    text-shadow: 0 0 20px hsl(var(--glow-cyan) / 0.3);
   }
 
   .text-glow-purple {
-    text-shadow: 0 0 10px hsl(var(--glow-purple) / 0.8),
-                 0 0 20px hsl(var(--glow-purple) / 0.6),
-                 0 0 40px hsl(var(--glow-purple) / 0.4);
+    text-shadow: 0 0 20px hsl(var(--glow-purple) / 0.3);
   }
 
   .gradient-text {

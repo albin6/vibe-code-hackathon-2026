@@ -3,37 +3,29 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const neonButtonVariants = cva(
-  "relative inline-flex items-center justify-center gap-2 font-display font-semibold uppercase tracking-wider transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  "relative inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         primary: [
           "bg-primary text-primary-foreground",
-          "shadow-[0_0_20px_hsl(185_100%_50%/0.5),0_0_40px_hsl(185_100%_50%/0.3)]",
-          "hover:shadow-[0_0_30px_hsl(185_100%_50%/0.7),0_0_60px_hsl(185_100%_50%/0.5)]",
-          "hover:scale-105",
-          "border border-primary/50",
+          "hover:bg-primary/90",
+          "shadow-sm hover:shadow-md",
         ],
         secondary: [
           "bg-secondary text-secondary-foreground",
-          "shadow-[0_0_20px_hsl(270_100%_65%/0.5),0_0_40px_hsl(270_100%_65%/0.3)]",
-          "hover:shadow-[0_0_30px_hsl(270_100%_65%/0.7),0_0_60px_hsl(270_100%_65%/0.5)]",
-          "hover:scale-105",
-          "border border-secondary/50",
+          "hover:bg-secondary/90",
+          "shadow-sm hover:shadow-md",
         ],
         accent: [
           "bg-accent text-accent-foreground",
-          "shadow-[0_0_20px_hsl(320_100%_60%/0.5),0_0_40px_hsl(320_100%_60%/0.3)]",
-          "hover:shadow-[0_0_30px_hsl(320_100%_60%/0.7),0_0_60px_hsl(320_100%_60%/0.5)]",
-          "hover:scale-105",
-          "border border-accent/50",
+          "hover:bg-accent/90",
+          "shadow-sm hover:shadow-md",
         ],
         outline: [
           "bg-transparent text-primary",
-          "border-2 border-primary",
-          "shadow-[0_0_10px_hsl(185_100%_50%/0.3)]",
+          "border border-primary",
           "hover:bg-primary/10",
-          "hover:shadow-[0_0_20px_hsl(185_100%_50%/0.5)]",
         ],
         ghost: [
           "bg-transparent text-foreground",
@@ -42,10 +34,10 @@ const neonButtonVariants = cva(
         ],
       },
       size: {
-        sm: "h-9 px-4 text-xs rounded-md",
-        default: "h-11 px-6 text-sm rounded-lg",
-        lg: "h-14 px-8 text-base rounded-lg",
-        xl: "h-16 px-10 text-lg rounded-xl",
+        sm: "h-9 px-4 text-sm rounded-md",
+        default: "h-10 px-5 text-sm rounded-lg",
+        lg: "h-11 px-6 text-base rounded-lg",
+        xl: "h-12 px-8 text-base rounded-lg",
       },
     },
     defaultVariants: {

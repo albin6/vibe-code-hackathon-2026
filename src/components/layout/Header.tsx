@@ -50,12 +50,9 @@ export function Header() {
             }}
             className="flex items-center gap-2 group"
           >
-            <div className="relative">
-              <Zap className="w-8 h-8 text-primary transition-all duration-300 group-hover:scale-110" />
-              <div className="absolute inset-0 blur-md bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <span className="font-display font-bold text-xl tracking-wider text-glow-cyan">
-              VIBE<span className="text-primary">HACK</span>
+            <Zap className="w-6 h-6 text-primary" />
+            <span className="font-display font-semibold text-lg">
+              Vibe<span className="text-primary">Hack</span>
             </span>
           </a>
 

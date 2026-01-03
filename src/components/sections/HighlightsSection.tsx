@@ -54,18 +54,18 @@ export function HighlightsSection() {
         {/* Section Header */}
         <div
           ref={ref}
-          className={`text-center mb-16 transition-all duration-700 ${
+          className={`text-center mb-12 transition-all duration-700 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/30 text-secondary text-sm font-medium mb-4">
+          <span className="inline-block px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm font-medium mb-3">
             Event Highlights
           </span>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-4">
+          <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl mb-3">
             What Makes Us <span className="gradient-text">Different</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Experience a hackathon like no other. We've designed every aspect to maximize your creativity and innovation.
+          <p className="text-muted-foreground max-w-xl mx-auto">
+            Experience a hackathon like no other. We've designed every aspect to maximize your creativity.
           </p>
         </div>
 
@@ -101,31 +101,25 @@ function HighlightCard({ icon: Icon, title, description, variant, delay }: Highl
     magenta: "text-accent",
   };
 
-  const glowColors = {
-    cyan: "group-hover:shadow-[0_0_30px_hsl(185_100%_50%/0.3)]",
-    purple: "group-hover:shadow-[0_0_30px_hsl(270_100%_65%/0.3)]",
-    magenta: "group-hover:shadow-[0_0_30px_hsl(320_100%_60%/0.3)]",
-  };
-
   return (
     <div
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-all duration-700 ${
+      className={`transition-all duration-500 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
       }`}
     >
       <GlowCard
         variant={variant}
-        className={`group h-full hover:scale-[1.02] transition-all duration-300 ${glowColors[variant]}`}
+        className="group h-full"
       >
-        <div className="flex items-start gap-4">
-          <div className={`p-3 rounded-lg bg-muted ${iconColors[variant]}`}>
-            <Icon className="w-6 h-6" />
+        <div className="flex items-start gap-3">
+          <div className={`p-2.5 rounded-lg bg-muted ${iconColors[variant]}`}>
+            <Icon className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-display font-semibold text-xl mb-2">{title}</h3>
-            <p className="text-muted-foreground">{description}</p>
+            <h3 className="font-semibold text-lg mb-1">{title}</h3>
+            <p className="text-sm text-muted-foreground">{description}</p>
           </div>
         </div>
       </GlowCard>
