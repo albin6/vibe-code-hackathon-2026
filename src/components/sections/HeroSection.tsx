@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { NeonButton } from "@/components/ui/NeonButton";
+import { useSmoothScroll } from "@/hooks/useParallax";
 
 export function HeroSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const smoothScrollY = useSmoothScroll();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -118,28 +120,46 @@ export function HeroSection() {
       {/* Radial gradient overlay */}
       <div className="absolute inset-0 bg-gradient-radial from-transparent via-background/50 to-background z-0" />
 
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-20 text-center">
+      {/* Content with parallax */}
+      <div 
+        className="relative z-10 container mx-auto px-4 py-20 text-center will-change-transform"
+        style={{ 
+          transform: `translateY(${smoothScrollY * 0.3}px)`,
+          opacity: Math.max(0, 1 - smoothScrollY / 600)
+        }}
+      >
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6 animate-fade-in">
+        <div 
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6 animate-fade-in"
+          style={{ transform: `translateY(${smoothScrollY * 0.1}px)` }}
+        >
           <Sparkles className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium text-primary">2025 Edition</span>
         </div>
 
-        {/* Main Title */}
-        <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 leading-tight animate-fade-in [animation-delay:100ms]">
+        {/* Main Title with stronger parallax */}
+        <h1 
+          className="font-display font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 leading-tight animate-fade-in [animation-delay:100ms]"
+          style={{ transform: `translateY(${smoothScrollY * 0.15}px)` }}
+        >
           <span className="block text-foreground">Vibe Coding</span>
           <span className="block gradient-text">Hackathon</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8 animate-fade-in [animation-delay:200ms]">
+        <p 
+          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8 animate-fade-in [animation-delay:200ms]"
+          style={{ transform: `translateY(${smoothScrollY * 0.08}px)` }}
+        >
           48 hours of innovation, creativity, and code.
           Build the future with the world's best developers.
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in [animation-delay:300ms]">
+        <div 
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in [animation-delay:300ms]"
+          style={{ transform: `translateY(${smoothScrollY * 0.05}px)` }}
+        >
           <NeonButton size="lg" className="w-full sm:w-auto">
             Participate Now
             <ArrowRight className="w-4 h-4" />
@@ -149,8 +169,11 @@ export function HeroSection() {
           </NeonButton>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 max-w-2xl mx-auto animate-fade-in [animation-delay:400ms]">
+        {/* Stats with slowest parallax */}
+        <div 
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 max-w-2xl mx-auto animate-fade-in [animation-delay:400ms]"
+          style={{ transform: `translateY(${smoothScrollY * 0.02}px)` }}
+        >
           {[
             { value: "500+", label: "Participants" },
             { value: "$50K", label: "In Prizes" },
@@ -167,8 +190,11 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      {/* Scroll indicator with fade out */}
+      <div 
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce transition-opacity duration-300"
+        style={{ opacity: Math.max(0, 1 - smoothScrollY / 200) }}
+      >
         <div className="w-6 h-10 rounded-full border-2 border-primary/50 flex items-start justify-center p-2">
           <div className="w-1.5 h-3 rounded-full bg-primary animate-pulse" />
         </div>

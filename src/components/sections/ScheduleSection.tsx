@@ -1,5 +1,6 @@
 import { Calendar, Rocket, Code2, Users, Award, PartyPopper } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useParallax, useScrollProgress } from "@/hooks/useParallax";
 
 const scheduleItems = [
   {
@@ -48,12 +49,23 @@ const scheduleItems = [
 
 export function ScheduleSection() {
   const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
+  const { ref: bgRef1, offset: bgOffset1 } = useParallax({ speed: 0.25, direction: "down" });
+  const { ref: bgRef2, offset: bgOffset2 } = useParallax({ speed: 0.15, direction: "up" });
+  const { ref: sectionRef, progress } = useScrollProgress();
 
   return (
-    <section id="schedule" className="relative py-20 md:py-32 overflow-hidden bg-muted/30">
-      {/* Background decorations */}
-      <div className="absolute top-1/2 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -translate-y-1/2" />
-      <div className="absolute top-1/3 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+    <section id="schedule" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden bg-muted/30">
+      {/* Background decorations with parallax */}
+      <div 
+        ref={bgRef1}
+        className="absolute top-1/2 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -translate-y-1/2 will-change-transform" 
+        style={{ transform: `translateY(${bgOffset1}px) translateX(${-50 + progress * 30}px)` }}
+      />
+      <div 
+        ref={bgRef2}
+        className="absolute top-1/3 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl will-change-transform" 
+        style={{ transform: `translateY(${bgOffset2}px) translateX(${50 - progress * 30}px)` }}
+      />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -105,35 +117,42 @@ interface TimelineItemProps {
 
 function TimelineItem({ icon: Icon, date, time, title, description, index, isLeft }: TimelineItemProps) {
   const { ref, isVisible } = useScrollReveal();
+  const { ref: parallaxRef, offset } = useParallax({ speed: 0.05 + index * 0.02, easing: 0.06 });
 
   return (
     <div
-      ref={ref}
-      className={`relative flex items-center mb-6 last:mb-0 ${
+      ref={(node) => {
+        (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        (parallaxRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }}
+      className={`relative flex items-center mb-6 last:mb-0 will-change-transform ${
         isLeft ? "md:flex-row" : "md:flex-row-reverse"
       }`}
+      style={{ transform: `translateY(${offset * 0.3}px)` }}
     >
-      {/* Timeline dot */}
+      {/* Timeline dot with pulse effect */}
       <div
-        className={`absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-primary transform -translate-x-1/2 z-10 transition-all duration-500 ${
+        className={`absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-primary transform -translate-x-1/2 z-10 transition-all duration-700 ease-out ${
           isVisible ? "scale-100" : "scale-0"
         }`}
-        style={{ transitionDelay: `${index * 100}ms` }}
-      />
+        style={{ transitionDelay: `${index * 150}ms` }}
+      >
+        <div className={`absolute inset-0 rounded-full bg-primary animate-ping opacity-30 ${isVisible ? '' : 'hidden'}`} />
+      </div>
 
-      {/* Content */}
+      {/* Content with smooth slide */}
       <div
-        className={`w-full md:w-1/2 pl-10 md:pl-0 transition-all duration-500 ${
-          isVisible ? "opacity-100 translate-x-0" : `opacity-0 ${isLeft ? "md:-translate-x-10" : "md:translate-x-10"}`
+        className={`w-full md:w-1/2 pl-10 md:pl-0 transition-all duration-700 ease-out ${
+          isVisible ? "opacity-100 translate-x-0" : `opacity-0 ${isLeft ? "md:-translate-x-16" : "md:translate-x-16"}`
         } ${isLeft ? "md:pr-10 md:text-right" : "md:pl-10"}`}
-        style={{ transitionDelay: `${index * 100 + 100}ms` }}
+        style={{ transitionDelay: `${index * 150 + 100}ms` }}
       >
         <div
-          className={`inline-flex items-center gap-3 p-4 rounded-lg bg-card border border-border hover:border-primary/30 hover:shadow-sm transition-all duration-200 ${
+          className={`inline-flex items-center gap-3 p-4 rounded-lg bg-card border border-border hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 ${
             isLeft ? "md:flex-row-reverse" : ""
           }`}
         >
-          <div className="p-2 rounded-md bg-primary/10 text-primary">
+          <div className="p-2 rounded-md bg-primary/10 text-primary transition-transform duration-300 hover:scale-110">
             <Icon className="w-4 h-4" />
           </div>
           <div className={isLeft ? "md:text-right" : ""}>
