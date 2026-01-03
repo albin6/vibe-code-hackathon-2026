@@ -121,37 +121,36 @@ export function HeroSection() {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-20 text-center">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-8 animate-fade-in">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6 animate-fade-in">
           <Sparkles className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium text-primary">2025 Edition</span>
         </div>
 
         {/* Main Title */}
-        <h1 className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl mb-6 leading-tight animate-fade-in [animation-delay:100ms]">
-          <span className="block text-glow-cyan">VIBE CODING</span>
-          <span className="block gradient-text">HACKATHON</span>
+        <h1 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 leading-tight animate-fade-in [animation-delay:100ms]">
+          <span className="block text-foreground">Vibe Coding</span>
+          <span className="block gradient-text">Hackathon</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in [animation-delay:200ms]">
+        <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8 animate-fade-in [animation-delay:200ms]">
           48 hours of innovation, creativity, and code.
-          <br className="hidden sm:block" />
           Build the future with the world's best developers.
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in [animation-delay:300ms]">
-          <NeonButton size="xl" className="w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in [animation-delay:300ms]">
+          <NeonButton size="lg" className="w-full sm:w-auto">
             Participate Now
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4" />
           </NeonButton>
-          <NeonButton variant="outline" size="xl" className="w-full sm:w-auto">
+          <NeonButton variant="outline" size="lg" className="w-full sm:w-auto">
             View Last Year
           </NeonButton>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-3xl mx-auto animate-fade-in [animation-delay:400ms]">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 max-w-2xl mx-auto animate-fade-in [animation-delay:400ms]">
           {[
             { value: "500+", label: "Participants" },
             { value: "$50K", label: "In Prizes" },
@@ -159,7 +158,7 @@ export function HeroSection() {
             { value: "100+", label: "Projects" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
-              <div className="font-display font-bold text-2xl sm:text-3xl md:text-4xl text-primary text-glow-cyan">
+              <div className="font-display font-semibold text-xl sm:text-2xl md:text-3xl text-primary">
                 {stat.value}
               </div>
               <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
