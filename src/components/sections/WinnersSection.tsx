@@ -2,6 +2,7 @@ import { Trophy, Medal, Award, ExternalLink } from "lucide-react";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { NeonButton } from "@/components/ui/NeonButton";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useMousePosition, useBackgroundParallax } from "@/hooks/useParallaxEffects";
 
 interface Winner {
   place: 1 | 2 | 3;
@@ -46,6 +47,8 @@ interface WinnersSectionProps {
 
 export function WinnersSection({ winners = placeholderWinners, isVisible = false }: WinnersSectionProps) {
   const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
+  const mouse = useMousePosition(1);
+  const { ref: sectionRef, offset } = useBackgroundParallax(0.4);
 
   if (!isVisible) return null;
 
@@ -74,10 +77,16 @@ export function WinnersSection({ winners = placeholderWinners, isVisible = false
   };
 
   return (
-    <section id="winners" className="relative py-20 md:py-32 overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+    <section id="winners" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden">
+      {/* Background decorations with parallax */}
+      <div 
+        className="absolute top-0 right-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl will-change-transform" 
+        style={{ transform: `translate(${mouse.x * 1.5}px, ${mouse.y * 1.5 + offset}px)` }}
+      />
+      <div 
+        className="absolute bottom-0 left-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl will-change-transform" 
+        style={{ transform: `translate(${-mouse.x * 1.2}px, ${-mouse.y * 1.2 + offset * 0.5}px)` }}
+      />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -87,10 +96,16 @@ export function WinnersSection({ winners = placeholderWinners, isVisible = false
             headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm font-medium mb-4">
+          <span 
+            className="inline-block px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm font-medium mb-4 will-change-transform"
+            style={{ transform: `translate(${mouse.x * 0.3}px, ${mouse.y * 0.3}px)` }}
+          >
             🏆 Winners Announced
           </span>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-4">
+          <h2 
+            className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-4 will-change-transform"
+            style={{ transform: `translate(${mouse.x * 0.15}px, ${mouse.y * 0.15}px)` }}
+          >
             Meet Our <span className="gradient-text">Champions</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
