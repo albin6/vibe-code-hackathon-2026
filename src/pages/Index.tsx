@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { HeroSection } from "@/components/sections/HeroSection";
+import { ImmersiveHero } from "@/components/sections/ImmersiveHero";
 import { HighlightsSection } from "@/components/sections/HighlightsSection";
+import { HorizontalShowcase } from "@/components/sections/HorizontalShowcase";
 import { ScheduleSection } from "@/components/sections/ScheduleSection";
 import { WinnersSection } from "@/components/sections/WinnersSection";
 import { RulesSection } from "@/components/sections/RulesSection";
@@ -17,8 +18,9 @@ const Index = () => {
       <CursorGlow />
       <Header />
       <main>
-        <HeroSection />
+        <ImmersiveHero />
         <HighlightsSection />
+        <HorizontalShowcase />
         <ScheduleSection />
         <WinnersSection isVisible={showWinners} />
         <RulesSection />
