@@ -4,6 +4,15 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
+/* 3D Preserve for floating shapes */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
 @layer base {
   :root {
     /* Dark futuristic background */
