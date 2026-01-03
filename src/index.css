@@ -184,7 +184,7 @@
 /* Keyframes */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-10px); }
 }
 
 @keyframes pulse-glow {
@@ -198,9 +198,37 @@
   100% { background-position: 0% 50%; }
 }
 
-@keyframes scan-line {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+@keyframes color-cycle {
+  0% { color: hsl(185 100% 50%); }
+  33% { color: hsl(270 100% 65%); }
+  66% { color: hsl(320 100% 60%); }
+  100% { color: hsl(185 100% 50%); }
+}
+
+@keyframes bg-color-cycle {
+  0% { background-color: hsl(185 100% 50% / 0.1); border-color: hsl(185 100% 50% / 0.3); }
+  33% { background-color: hsl(270 100% 65% / 0.1); border-color: hsl(270 100% 65% / 0.3); }
+  66% { background-color: hsl(320 100% 60% / 0.1); border-color: hsl(320 100% 60% / 0.3); }
+  100% { background-color: hsl(185 100% 50% / 0.1); border-color: hsl(185 100% 50% / 0.3); }
+}
+
+@keyframes glow-cycle {
+  0% { box-shadow: 0 0 20px hsl(185 100% 50% / 0.2); }
+  33% { box-shadow: 0 0 20px hsl(270 100% 65% / 0.2); }
+  66% { box-shadow: 0 0 20px hsl(320 100% 60% / 0.2); }
+  100% { box-shadow: 0 0 20px hsl(185 100% 50% / 0.2); }
+}
+
+@keyframes border-glow-cycle {
+  0% { border-color: hsl(185 100% 50% / 0.5); }
+  33% { border-color: hsl(270 100% 65% / 0.5); }
+  66% { border-color: hsl(320 100% 60% / 0.5); }
+  100% { border-color: hsl(185 100% 50% / 0.5); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .animate-float {
@@ -214,6 +242,33 @@
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
+}
+
+.animate-color-cycle {
+  animation: color-cycle 8s ease-in-out infinite;
+}
+
+.animate-bg-cycle {
+  animation: bg-color-cycle 8s ease-in-out infinite;
+}
+
+.animate-glow-cycle {
+  animation: glow-cycle 8s ease-in-out infinite;
+}
+
+.animate-border-cycle {
+  animation: border-glow-cycle 8s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary) / 0) 0%,
+    hsl(var(--primary) / 0.1) 50%,
+    hsl(var(--primary) / 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
 }
 
 /* Custom scrollbar */
