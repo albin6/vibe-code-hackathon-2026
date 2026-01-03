@@ -1,6 +1,7 @@
 import { Clock, Users, Trophy, Globe, Code, Zap } from "lucide-react";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useParallax, useScrollProgress } from "@/hooks/useParallax";
 
 const highlights = [
   {
@@ -43,12 +44,23 @@ const highlights = [
 
 export function HighlightsSection() {
   const { ref, isVisible } = useScrollReveal();
+  const { ref: parallaxRef1, offset: offset1 } = useParallax({ speed: 0.3, direction: "up" });
+  const { ref: parallaxRef2, offset: offset2 } = useParallax({ speed: 0.2, direction: "down" });
+  const { ref: sectionRef, progress } = useScrollProgress();
 
   return (
-    <section id="highlights" className="relative py-20 md:py-32 overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
+    <section id="highlights" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden">
+      {/* Background decorations with parallax */}
+      <div 
+        ref={parallaxRef1}
+        className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl will-change-transform" 
+        style={{ transform: `translateY(${offset1}px) scale(${1 + progress * 0.2})` }}
+      />
+      <div 
+        ref={parallaxRef2}
+        className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl will-change-transform" 
+        style={{ transform: `translateY(${offset2}px) scale(${1 + progress * 0.15})` }}
+      />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -94,6 +106,7 @@ interface HighlightCardProps {
 
 function HighlightCard({ icon: Icon, title, description, variant, delay }: HighlightCardProps) {
   const { ref, isVisible } = useScrollReveal();
+  const { ref: parallaxRef, offset } = useParallax({ speed: 0.1 + (delay / 1000), easing: 0.08 });
 
   const iconColors = {
     cyan: "text-primary",
@@ -103,18 +116,25 @@ function HighlightCard({ icon: Icon, title, description, variant, delay }: Highl
 
   return (
     <div
-      ref={ref}
-      style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-all duration-500 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      ref={(node) => {
+        // Combine refs
+        (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        (parallaxRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }}
+      style={{ 
+        transitionDelay: `${delay}ms`,
+        transform: `translateY(${isVisible ? offset * 0.5 : 20}px)`
+      }}
+      className={`transition-opacity duration-700 ease-out will-change-transform ${
+        isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
       <GlowCard
         variant={variant}
-        className="group h-full"
+        className="group h-full transition-transform duration-300 hover:scale-[1.02]"
       >
         <div className="flex items-start gap-3">
-          <div className={`p-2.5 rounded-lg bg-muted ${iconColors[variant]}`}>
+          <div className={`p-2.5 rounded-lg bg-muted ${iconColors[variant]} transition-transform duration-300 group-hover:scale-110`}>
             <Icon className="w-5 h-5" />
           </div>
           <div>
