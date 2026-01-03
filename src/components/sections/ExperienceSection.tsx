@@ -1,6 +1,6 @@
-import { useRef } from "react";
 import { Sparkles, Zap, Globe, Rocket, Code2, Trophy } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useMousePosition, useBackgroundParallax } from "@/hooks/useParallaxEffects";
 import { GlowCard } from "@/components/ui/GlowCard";
 
 const experiences = [
@@ -62,7 +62,8 @@ const experiences = [
 
 export function ExperienceSection() {
   const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const mouse = useMousePosition(0.5);
+  const { ref: sectionRef, offset } = useBackgroundParallax(0.4);
 
   return (
     <section
@@ -70,15 +71,27 @@ export function ExperienceSection() {
       id="experience"
       className="relative py-24 md:py-32 overflow-hidden"
     >
-      {/* Animated background gradients */}
+      {/* Animated background gradients with parallax */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] animate-pulse [animation-delay:1s]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/3 rounded-full blur-[120px] animate-pulse [animation-delay:2s]" />
+        <div 
+          className="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] will-change-transform" 
+          style={{ transform: `translateY(${-offset * 0.6}px) translate(${mouse.x * 1.5}px, ${mouse.y * 1.5}px)` }}
+        />
+        <div 
+          className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] will-change-transform" 
+          style={{ transform: `translateY(${-offset * 0.4}px) translate(${-mouse.x}px, ${-mouse.y}px)` }}
+        />
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/3 rounded-full blur-[120px] will-change-transform"
+          style={{ transform: `translate(-50%, -50%) translateY(${-offset * 0.2}px)` }}
+        />
       </div>
 
       {/* Grid pattern */}
-      <div className="absolute inset-0 bg-grid opacity-5" />
+      <div 
+        className="absolute inset-0 bg-grid opacity-5 will-change-transform"
+        style={{ transform: `translateY(${-offset * 0.2}px)` }}
+      />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
@@ -102,7 +115,7 @@ export function ExperienceSection() {
         {/* Experience Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {experiences.map((exp, index) => (
-            <ExperienceCard key={exp.title} {...exp} index={index} />
+            <ExperienceCard key={exp.title} {...exp} index={index} mouse={mouse} />
           ))}
         </div>
       </div>
@@ -119,6 +132,7 @@ interface ExperienceCardProps {
   iconColor: string;
   delay: number;
   index: number;
+  mouse: { x: number; y: number };
 }
 
 function ExperienceCard({
@@ -130,8 +144,12 @@ function ExperienceCard({
   iconColor,
   delay,
   index,
+  mouse,
 }: ExperienceCardProps) {
   const { ref, isVisible } = useScrollReveal();
+
+  // Vary mouse effect based on card position
+  const mouseMultiplier = (index % 3 - 1) * 0.05;
 
   return (
     <div
@@ -139,7 +157,10 @@ function ExperienceCard({
       className={`transition-all duration-700 ease-out ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
       }`}
-      style={{ transitionDelay: `${delay}ms` }}
+      style={{ 
+        transitionDelay: `${delay}ms`,
+        transform: isVisible ? `translate(${mouse.x * mouseMultiplier}px, ${mouse.y * 0.05}px)` : undefined
+      }}
     >
       <GlowCard
         variant={index % 3 === 0 ? "cyan" : index % 3 === 1 ? "purple" : "magenta"}
