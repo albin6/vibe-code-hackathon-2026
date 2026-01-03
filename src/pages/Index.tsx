@@ -1,12 +1,27 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { HighlightsSection } from "@/components/sections/HighlightsSection";
+import { ScheduleSection } from "@/components/sections/ScheduleSection";
+import { WinnersSection } from "@/components/sections/WinnersSection";
+import { RulesSection } from "@/components/sections/RulesSection";
 
 const Index = () => {
+  // Toggle this to show/hide the winners section after the event
+  const [showWinners] = useState(false);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main>
+        <HeroSection />
+        <HighlightsSection />
+        <ScheduleSection />
+        <WinnersSection isVisible={showWinners} />
+        <RulesSection />
+      </main>
+      <Footer />
     </div>
   );
 };
