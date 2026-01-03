@@ -1,6 +1,7 @@
 import { CheckCircle2, Users, FileCode, Scale, Star } from "lucide-react";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useMousePosition, useBackgroundParallax } from "@/hooks/useParallaxEffects";
 
 const ruleCategories = [
   {
@@ -49,12 +50,20 @@ const ruleCategories = [
 
 export function RulesSection() {
   const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
+  const mouse = useMousePosition(0.5);
+  const { ref: sectionRef, offset } = useBackgroundParallax(0.3);
 
   return (
-    <section id="rules" className="relative py-20 md:py-32 overflow-hidden bg-muted/30">
-      {/* Background decorations */}
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute top-1/4 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
+    <section id="rules" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden bg-muted/30">
+      {/* Background decorations with parallax */}
+      <div 
+        className="absolute bottom-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl will-change-transform" 
+        style={{ transform: `translateY(${-offset * 0.4}px) translate(${-mouse.x}px, ${-mouse.y}px)` }}
+      />
+      <div 
+        className="absolute top-1/4 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl will-change-transform"
+        style={{ transform: `translateY(${-offset * 0.3}px) translate(${mouse.x * 0.8}px, ${mouse.y * 0.8}px)` }}
+      />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
@@ -82,6 +91,8 @@ export function RulesSection() {
               key={category.title}
               {...category}
               delay={index * 100}
+              index={index}
+              mouse={mouse}
             />
           ))}
         </div>
@@ -95,18 +106,26 @@ interface RuleCardProps {
   title: string;
   rules: string[];
   delay: number;
+  index: number;
+  mouse: { x: number; y: number };
 }
 
-function RuleCard({ icon: Icon, title, rules, delay }: RuleCardProps) {
+function RuleCard({ icon: Icon, title, rules, delay, index, mouse }: RuleCardProps) {
   const { ref, isVisible } = useScrollReveal();
+
+  // Alternate mouse direction for visual interest
+  const mouseMultiplier = index % 2 === 0 ? 0.08 : -0.08;
 
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${
+      className={`transition-all duration-700 ease-out will-change-transform ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
       }`}
-      style={{ transitionDelay: `${delay}ms` }}
+      style={{ 
+        transitionDelay: `${delay}ms`,
+        transform: isVisible ? `translate(${mouse.x * mouseMultiplier}px, ${mouse.y * 0.05}px)` : undefined
+      }}
     >
       <GlowCard variant="default" className="h-full group hover:border-primary/40 transition-colors duration-300">
         <div className="flex items-center gap-3 mb-5">
@@ -117,9 +136,9 @@ function RuleCard({ icon: Icon, title, rules, delay }: RuleCardProps) {
         </div>
 
         <ul className="space-y-3">
-          {rules.map((rule, index) => (
+          {rules.map((rule, ruleIndex) => (
             <li 
-              key={index} 
+              key={ruleIndex} 
               className="flex items-start gap-3"
             >
               <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
