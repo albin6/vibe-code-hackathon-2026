@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Menu, X, Zap } from "lucide-react";
 import { NeonButton } from "@/components/ui/NeonButton";
 import { cn } from "@/lib/utils";
@@ -14,7 +15,7 @@ const navLinks = [
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const mouse = useMousePosition(0.2);
+  const mouse = useMousePosition(0.5);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +34,10 @@ export function Header() {
   };
 
   return (
-    <header
+    <motion.header
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled
@@ -44,71 +48,95 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo with mouse effect */}
-          <a
+          <motion.a
             href="#home"
             onClick={(e) => {
               e.preventDefault();
               scrollToSection("#home");
             }}
-            className="flex items-center gap-2 group will-change-transform"
-            style={{ transform: `translate(${mouse.x * 0.15}px, ${mouse.y * 0.15}px)` }}
+            className="flex items-center gap-2 group"
+            animate={{ x: mouse.x * 0.2, y: mouse.y * 0.2 }}
+            transition={{ type: "spring", stiffness: 150, damping: 15 }}
+            whileHover={{ scale: 1.05 }}
           >
-            <Zap className="w-6 h-6 text-primary" />
+            <motion.div
+              animate={{ rotate: mouse.x * 0.1 }}
+              transition={{ type: "spring", stiffness: 200 }}
+            >
+              <Zap className="w-6 h-6 text-primary" />
+            </motion.div>
             <span className="font-display font-semibold text-lg">
               Vibe<span className="text-primary">Hack</span>
             </span>
-          </a>
+          </motion.a>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             {navLinks.map((link, index) => (
-              <a
+              <motion.a
                 key={link.href}
                 href={link.href}
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToSection(link.href);
                 }}
-                className="font-medium text-muted-foreground hover:text-primary transition-colors duration-200 relative group will-change-transform"
-                style={{ transform: `translate(${mouse.x * 0.08 * (index - 1.5)}px, ${mouse.y * 0.05}px)` }}
+                className="font-medium text-muted-foreground hover:text-primary transition-colors duration-200 relative group"
+                animate={{ 
+                  x: mouse.x * 0.1 * (index - 1.5), 
+                  y: mouse.y * 0.08 
+                }}
+                transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                whileHover={{ scale: 1.1, y: -2 }}
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_hsl(185_100%_50%/0.5)]" />
-              </a>
+                <motion.span 
+                  className="absolute -bottom-1 left-0 h-0.5 bg-primary shadow-[0_0_10px_hsl(185_100%_50%/0.5)]"
+                  initial={{ width: 0 }}
+                  whileHover={{ width: "100%" }}
+                  transition={{ duration: 0.3 }}
+                />
+              </motion.a>
             ))}
           </nav>
 
           {/* CTA Button */}
-          <div 
-            className="hidden md:block will-change-transform"
-            style={{ transform: `translate(${-mouse.x * 0.1}px, ${mouse.y * 0.05}px)` }}
+          <motion.div 
+            className="hidden md:block"
+            animate={{ x: -mouse.x * 0.15, y: mouse.y * 0.08 }}
+            transition={{ type: "spring", stiffness: 150, damping: 15 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
           >
             <NeonButton size="default">
               Submit Your Entry
             </NeonButton>
-          </div>
+          </motion.div>
 
           {/* Mobile Menu Toggle */}
-          <button
+          <motion.button
             className="md:hidden p-2 text-foreground hover:text-primary transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
+            whileTap={{ scale: 0.9 }}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          </motion.button>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      <div
-        className={cn(
-          "md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border/50 overflow-hidden transition-all duration-300",
-          isMobileMenuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
-        )}
+      <motion.div
+        className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-lg border-b border-border/50 overflow-hidden"
+        initial={false}
+        animate={{
+          height: isMobileMenuOpen ? "auto" : 0,
+          opacity: isMobileMenuOpen ? 1 : 0,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
       >
         <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
-          {navLinks.map((link) => (
-            <a
+          {navLinks.map((link, index) => (
+            <motion.a
               key={link.href}
               href={link.href}
               onClick={(e) => {
@@ -116,15 +144,30 @@ export function Header() {
                 scrollToSection(link.href);
               }}
               className="font-medium text-muted-foreground hover:text-primary transition-colors py-2"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ 
+                opacity: isMobileMenuOpen ? 1 : 0, 
+                x: isMobileMenuOpen ? 0 : -20 
+              }}
+              transition={{ delay: index * 0.1 }}
             >
               {link.label}
-            </a>
+            </motion.a>
           ))}
-          <NeonButton size="default" className="mt-2">
-            Submit Your Entry
-          </NeonButton>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ 
+              opacity: isMobileMenuOpen ? 1 : 0, 
+              y: isMobileMenuOpen ? 0 : 10 
+            }}
+            transition={{ delay: 0.4 }}
+          >
+            <NeonButton size="default" className="mt-2 w-full">
+              Submit Your Entry
+            </NeonButton>
+          </motion.div>
         </nav>
-      </div>
-    </header>
+      </motion.div>
+    </motion.header>
   );
 }

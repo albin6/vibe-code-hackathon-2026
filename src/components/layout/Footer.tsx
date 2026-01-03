@@ -1,5 +1,7 @@
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Zap, Github, Twitter, Linkedin, Youtube, Mail } from "lucide-react";
-import { useMousePosition, useBackgroundParallax } from "@/hooks/useParallaxEffects";
+import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
 
 const socialLinks = [
   { icon: Github, href: "#", label: "GitHub" },
@@ -17,102 +19,182 @@ const footerLinks = [
 ];
 
 export function Footer() {
-  const mouse = useMousePosition(0.3);
-  const { ref, offset } = useBackgroundParallax(0.2);
+  const footerRef = useRef<HTMLElement>(null);
+  const mouse = useMousePosition(0.5);
+  const float1 = useFloatingAnimation(0);
+  const float2 = useFloatingAnimation(1);
+
+  const { scrollYProgress } = useScroll({
+    target: footerRef,
+    offset: ["start end", "end end"]
+  });
+
+  const springConfig = { stiffness: 100, damping: 30 };
+  const backgroundY = useSpring(useTransform(scrollYProgress, [0, 1], [50, 0]), springConfig);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut" as const,
+      },
+    },
+  };
 
   return (
-    <footer ref={ref} className="relative border-t border-border/50 overflow-hidden">
+    <footer ref={footerRef} className="relative border-t border-border/50 overflow-hidden">
       {/* Glow divider */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
-      <div 
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-8 bg-primary/10 blur-xl will-change-transform"
-        style={{ transform: `translateX(${mouse.x}px)` }}
+      <motion.div 
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-8 bg-primary/10 blur-xl"
+        animate={{ x: mouse.x }}
+        transition={{ type: "spring", stiffness: 100, damping: 20 }}
       />
 
-      {/* Background orbs with parallax */}
-      <div 
-        className="absolute -top-32 -left-32 w-64 h-64 bg-primary/5 rounded-full blur-3xl will-change-transform"
-        style={{ transform: `translateY(${-offset * 0.3}px) translate(${mouse.x}px, ${mouse.y}px)` }}
+      {/* Background orbs with enhanced parallax */}
+      <motion.div 
+        className="absolute -top-32 -left-32 w-[300px] h-[300px] bg-primary/8 rounded-full blur-[100px]"
+        style={{ y: backgroundY }}
+        animate={{
+          x: mouse.x * 1.5 + float1.y,
+          rotate: float1.rotate,
+        }}
+        transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
-      <div 
-        className="absolute -bottom-32 -right-32 w-64 h-64 bg-secondary/5 rounded-full blur-3xl will-change-transform"
-        style={{ transform: `translateY(${-offset * 0.2}px) translate(${-mouse.x * 0.8}px, ${-mouse.y * 0.8}px)` }}
+      <motion.div 
+        className="absolute -bottom-32 -right-32 w-[250px] h-[250px] bg-secondary/8 rounded-full blur-[80px]"
+        animate={{
+          x: -mouse.x * 1.2 + float2.y,
+          y: -mouse.y * 1.2,
+          rotate: -float2.rotate,
+        }}
+        transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
 
-      <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
+      <motion.div 
+        className="container mx-auto px-4 py-12 md:py-16 relative z-10"
+        style={{ opacity }}
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
           {/* Brand */}
-          <div>
-            <a 
+          <motion.div variants={itemVariants}>
+            <motion.a 
               href="#home" 
               className="flex items-center gap-2 mb-4 group"
-              style={{ transform: `translate(${mouse.x * 0.1}px, ${mouse.y * 0.1}px)` }}
+              animate={{ x: mouse.x * 0.15, y: mouse.y * 0.15 }}
+              transition={{ type: "spring", stiffness: 150, damping: 15 }}
+              whileHover={{ scale: 1.05 }}
             >
               <div className="relative">
-                <Zap className="w-8 h-8 text-primary transition-all duration-300 group-hover:scale-110" />
+                <motion.div
+                  whileHover={{ rotate: 15, scale: 1.2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <Zap className="w-8 h-8 text-primary" />
+                </motion.div>
                 <div className="absolute inset-0 blur-md bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="font-display font-bold text-xl tracking-wider">
                 VIBE<span className="text-primary">HACK</span>
               </span>
-            </a>
+            </motion.a>
             <p className="text-muted-foreground text-sm max-w-xs">
               The premier hackathon for developers who want to push boundaries and create the future.
             </p>
-          </div>
+          </motion.div>
 
           {/* Quick Links */}
-          <div>
+          <motion.div variants={itemVariants}>
             <h4 className="font-display font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               {footerLinks.map((link, index) => (
-                <li 
+                <motion.li 
                   key={link.label}
-                  style={{ transform: `translateX(${mouse.x * 0.05 * (index + 1)}px)` }}
+                  animate={{ x: mouse.x * 0.08 * (index + 1) }}
+                  transition={{ type: "spring", stiffness: 150, damping: 15 }}
                 >
-                  <a
+                  <motion.a
                     href={link.href}
                     className="text-muted-foreground text-sm hover:text-primary transition-colors"
+                    whileHover={{ x: 5 }}
                   >
                     {link.label}
-                  </a>
-                </li>
+                  </motion.a>
+                </motion.li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
           {/* Social & Newsletter */}
-          <div>
+          <motion.div variants={itemVariants}>
             <h4 className="font-display font-semibold mb-4">Stay Connected</h4>
             <div className="flex gap-3 mb-6">
               {socialLinks.map((social, index) => (
-                <a
+                <motion.a
                   key={social.label}
                   href={social.href}
                   aria-label={social.label}
-                  className="p-2 rounded-lg bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200 will-change-transform"
-                  style={{ transform: `translate(${mouse.x * 0.1 * (index - 2)}px, ${mouse.y * 0.05}px)` }}
+                  className="p-2 rounded-lg bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200"
+                  animate={{ 
+                    x: mouse.x * 0.12 * (index - 2), 
+                    y: mouse.y * 0.08 
+                  }}
+                  transition={{ type: "spring", stiffness: 150, damping: 15 }}
+                  whileHover={{ scale: 1.2, y: -5 }}
+                  whileTap={{ scale: 0.9 }}
                 >
                   <social.icon className="w-5 h-5" />
-                </a>
+                </motion.a>
               ))}
             </div>
             <p className="text-muted-foreground text-sm">
               Follow us for updates, announcements, and behind-the-scenes content.
             </p>
-          </div>
+          </motion.div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
+        <motion.div 
+          className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+        >
           <p className="text-muted-foreground text-sm text-center md:text-left">
             © {new Date().getFullYear()} VibeHack. All rights reserved.
           </p>
-          <p className="text-muted-foreground text-sm">
-            Made with <span className="text-accent">♥</span> by the VibeHack Team
-          </p>
-        </div>
-      </div>
+          <motion.p 
+            className="text-muted-foreground text-sm"
+            whileHover={{ scale: 1.05 }}
+          >
+            Made with <motion.span 
+              className="text-accent inline-block"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >♥</motion.span> by the VibeHack Team
+          </motion.p>
+        </motion.div>
+      </motion.div>
     </footer>
   );
 }
