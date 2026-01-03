@@ -1,8 +1,9 @@
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Trophy, Medal, Award, ExternalLink } from "lucide-react";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { NeonButton } from "@/components/ui/NeonButton";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { useMousePosition, useBackgroundParallax } from "@/hooks/useParallaxEffects";
+import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
 
 interface Winner {
   place: 1 | 2 | 3;
@@ -46,9 +47,44 @@ interface WinnersSectionProps {
 }
 
 export function WinnersSection({ winners = placeholderWinners, isVisible = false }: WinnersSectionProps) {
-  const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
+  const sectionRef = useRef<HTMLDivElement>(null);
   const mouse = useMousePosition(1);
-  const { ref: sectionRef, offset } = useBackgroundParallax(0.4);
+  const float1 = useFloatingAnimation(0);
+  const float2 = useFloatingAnimation(1.5);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const springConfig = { stiffness: 100, damping: 30 };
+  const backgroundY1 = useSpring(useTransform(scrollYProgress, [0, 1], [-50, 150]), springConfig);
+  const backgroundY2 = useSpring(useTransform(scrollYProgress, [0, 1], [50, -100]), springConfig);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 80, scale: 0.9, rotateX: 15 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      rotateX: 0,
+      transition: {
+        duration: 0.7,
+        ease: "easeOut" as const,
+      },
+    },
+  };
 
   if (!isVisible) return null;
 
@@ -78,43 +114,68 @@ export function WinnersSection({ winners = placeholderWinners, isVisible = false
 
   return (
     <section id="winners" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden">
-      {/* Background decorations with parallax */}
-      <div 
-        className="absolute top-0 right-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl will-change-transform" 
-        style={{ transform: `translate(${mouse.x * 1.5}px, ${mouse.y * 1.5 + offset}px)` }}
+      {/* Background decorations with enhanced parallax */}
+      <motion.div
+        className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-yellow-500/8 rounded-full blur-[120px]"
+        style={{ y: backgroundY1 }}
+        animate={{
+          x: mouse.x * 2 + float1.y,
+          rotate: float1.rotate,
+        }}
+        transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
-      <div 
-        className="absolute bottom-0 left-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl will-change-transform" 
-        style={{ transform: `translate(${-mouse.x * 1.2}px, ${-mouse.y * 1.2 + offset * 0.5}px)` }}
+      <motion.div
+        className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-secondary/8 rounded-full blur-[100px]"
+        style={{ y: backgroundY2 }}
+        animate={{
+          x: -mouse.x * 1.5 + float2.y,
+          rotate: -float2.rotate,
+        }}
+        transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div
-          ref={headerRef}
-          className={`text-center mb-16 transition-all duration-700 ${
-            headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <span 
-            className="inline-block px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm font-medium mb-4 will-change-transform"
-            style={{ transform: `translate(${mouse.x * 0.3}px, ${mouse.y * 0.3}px)` }}
+          <motion.span
+            className="inline-block px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm font-medium mb-4"
+            animate={{ x: mouse.x * 0.3, y: mouse.y * 0.3 }}
+            transition={{ type: "spring", stiffness: 150, damping: 15 }}
+            whileHover={{ scale: 1.05 }}
           >
             🏆 Winners Announced
-          </span>
-          <h2 
-            className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-4 will-change-transform"
-            style={{ transform: `translate(${mouse.x * 0.15}px, ${mouse.y * 0.15}px)` }}
+          </motion.span>
+          <motion.h2
+            className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-4"
+            animate={{ x: mouse.x * 0.15, y: mouse.y * 0.15 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
           >
             Meet Our <span className="gradient-text">Champions</span>
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-muted-foreground text-lg max-w-2xl mx-auto"
+            animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          >
             Congratulations to all participants! Here are the outstanding projects that impressed our judges.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Winners Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+          style={{ perspective: "1000px" }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
           {/* Reorder for desktop: 2nd, 1st, 3rd */}
           {[winners[1], winners[0], winners[2]].map((winner, displayIndex) => {
             const config = placeConfig[winner.place];
@@ -128,11 +189,13 @@ export function WinnersSection({ winners = placeholderWinners, isVisible = false
                 config={config}
                 Icon={Icon}
                 isFirst={isFirst}
-                delay={displayIndex * 150}
+                displayIndex={displayIndex}
+                mouse={mouse}
+                variants={cardVariants}
               />
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -149,19 +212,28 @@ interface WinnerCardProps {
   };
   Icon: React.ElementType;
   isFirst: boolean;
-  delay: number;
+  displayIndex: number;
+  mouse: { x: number; y: number };
+  variants: any;
 }
 
-function WinnerCard({ winner, config, Icon, isFirst, delay }: WinnerCardProps) {
-  const { ref, isVisible } = useScrollReveal();
+function WinnerCard({ winner, config, Icon, isFirst, displayIndex, mouse, variants }: WinnerCardProps) {
+  const xMultiplier = (displayIndex - 1) * 0.15;
 
   return (
-    <div
-      ref={ref}
-      style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-all duration-700 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      } ${isFirst ? "lg:-mt-4 lg:scale-105" : ""}`}
+    <motion.div
+      variants={variants}
+      className={isFirst ? "lg:-mt-4 lg:scale-105" : ""}
+      whileHover={{
+        scale: isFirst ? 1.08 : 1.04,
+        y: -12,
+        transition: { duration: 0.3, ease: "easeOut" }
+      }}
+      animate={{
+        x: mouse.x * xMultiplier,
+        y: mouse.y * 0.1,
+      }}
+      transition={{ type: "spring", stiffness: 150, damping: 20 }}
     >
       <GlowCard
         variant={config.variant}
@@ -169,9 +241,13 @@ function WinnerCard({ winner, config, Icon, isFirst, delay }: WinnerCardProps) {
       >
         {/* Place badge */}
         <div className="absolute top-4 right-4">
-          <div className={`p-2 rounded-lg bg-muted ${config.iconColor}`}>
+          <motion.div
+            className={`p-2 rounded-lg bg-muted ${config.iconColor}`}
+            whileHover={{ scale: 1.2, rotate: 10 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
             <Icon className="w-6 h-6" />
-          </div>
+          </motion.div>
         </div>
 
         {/* Content */}
@@ -183,25 +259,32 @@ function WinnerCard({ winner, config, Icon, isFirst, delay }: WinnerCardProps) {
 
           {/* Tech stack */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {winner.techStack.map((tech) => (
-              <span
+            {winner.techStack.map((tech, i) => (
+              <motion.span
                 key={tech}
                 className="px-2 py-1 text-xs rounded-md bg-muted text-muted-foreground"
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ scale: 1.1 }}
               >
                 {tech}
-              </span>
+              </motion.span>
             ))}
           </div>
 
           {/* Project link */}
           {winner.projectUrl && (
-            <NeonButton variant="ghost" size="sm" className="gap-2">
-              View Project
-              <ExternalLink className="w-4 h-4" />
-            </NeonButton>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+              <NeonButton variant="ghost" size="sm" className="gap-2">
+                View Project
+                <ExternalLink className="w-4 h-4" />
+              </NeonButton>
+            </motion.div>
           )}
         </div>
       </GlowCard>
-    </div>
+    </motion.div>
   );
 }

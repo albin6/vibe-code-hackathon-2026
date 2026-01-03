@@ -1,6 +1,7 @@
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Calendar, Rocket, Code2, Users, Award, PartyPopper } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { useMousePosition, useBackgroundParallax } from "@/hooks/useParallaxEffects";
+import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
 
 const scheduleItems = [
   {
@@ -48,45 +49,103 @@ const scheduleItems = [
 ];
 
 export function ScheduleSection() {
-  const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
-  const mouse = useMousePosition(0.5);
-  const { ref: sectionRef, offset } = useBackgroundParallax(0.35);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const mouse = useMousePosition(1);
+  const float1 = useFloatingAnimation(0);
+  const float2 = useFloatingAnimation(1.5);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const springConfig = { stiffness: 100, damping: 30 };
+  const backgroundY1 = useSpring(useTransform(scrollYProgress, [0, 1], [-80, 150]), springConfig);
+  const backgroundY2 = useSpring(useTransform(scrollYProgress, [0, 1], [50, -100]), springConfig);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.12,
+        delayChildren: 0.1,
+      },
+    },
+  };
 
   return (
     <section id="schedule" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden bg-muted/30">
-      {/* Background decorations with parallax */}
-      <div 
-        className="absolute top-1/2 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -translate-y-1/2 will-change-transform" 
-        style={{ transform: `translateY(${-offset * 0.4}px) translateX(${mouse.x}px)` }}
+      {/* Background decorations with enhanced parallax */}
+      <motion.div
+        className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-accent/8 rounded-full blur-[100px] -translate-y-1/2"
+        style={{ y: backgroundY1 }}
+        animate={{
+          x: mouse.x * 1.5 + float1.y,
+          rotate: float1.rotate,
+        }}
+        transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
-      <div 
-        className="absolute top-1/3 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl will-change-transform" 
-        style={{ transform: `translateY(${-offset * 0.3}px) translateX(${-mouse.x * 0.8}px)` }}
+      <motion.div
+        className="absolute top-1/3 right-0 w-[350px] h-[350px] bg-primary/8 rounded-full blur-[100px]"
+        style={{ y: backgroundY2 }}
+        animate={{
+          x: -mouse.x * 1.2 + float2.y,
+          rotate: -float2.rotate,
+        }}
+        transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
 
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div
-          ref={headerRef}
-          className={`text-center mb-12 transition-all duration-700 ${
-            headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <span className="inline-block px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-3">
+          <motion.span
+            className="inline-block px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-3"
+            animate={{ x: mouse.x * 0.3, y: mouse.y * 0.3 }}
+            transition={{ type: "spring", stiffness: 150, damping: 15 }}
+            whileHover={{ scale: 1.05 }}
+          >
             Event Timeline
-          </span>
-          <h2 className="font-display font-bold text-2xl sm:text-3xl md:text-4xl mb-3">
+          </motion.span>
+          <motion.h2
+            className="font-display font-bold text-2xl sm:text-3xl md:text-4xl mb-3"
+            animate={{ x: mouse.x * 0.15, y: mouse.y * 0.15 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          >
             Mark Your <span className="gradient-text">Calendar</span>
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-muted-foreground max-w-xl mx-auto"
+            animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          >
             From registration to celebration, here's everything you need to know.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Timeline */}
-        <div className="relative max-w-4xl mx-auto">
+        <motion.div
+          className="relative max-w-4xl mx-auto"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+        >
           {/* Timeline line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-accent" />
+          <motion.div
+            className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-accent"
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            style={{ originY: 0 }}
+          />
 
           {scheduleItems.map((item, index) => (
             <TimelineItem
@@ -97,7 +156,7 @@ export function ScheduleSection() {
               mouse={mouse}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -115,44 +174,66 @@ interface TimelineItemProps {
 }
 
 function TimelineItem({ icon: Icon, date, time, title, description, index, isLeft, mouse }: TimelineItemProps) {
-  const { ref, isVisible } = useScrollReveal();
+  const mouseOffset = isLeft ? mouse.x * 0.15 : -mouse.x * 0.15;
 
-  // Cards on left move opposite to cards on right
-  const mouseOffset = isLeft ? mouse.x * 0.1 : -mouse.x * 0.1;
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      x: isLeft ? -60 : 60,
+      scale: 0.9,
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut" as const,
+      },
+    },
+  };
 
   return (
-    <div
-      ref={ref}
+    <motion.div
       className={`relative flex items-center mb-6 last:mb-0 ${
         isLeft ? "md:flex-row" : "md:flex-row-reverse"
       }`}
+      variants={itemVariants}
     >
       {/* Timeline dot */}
-      <div
-        className={`absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-primary transform -translate-x-1/2 z-10 transition-all duration-700 ease-out ${
-          isVisible ? "scale-100" : "scale-0"
-        }`}
-        style={{ transitionDelay: `${index * 100}ms` }}
+      <motion.div
+        className="absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-primary transform -translate-x-1/2 z-10"
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: index * 0.1, duration: 0.4, type: "spring" }}
       />
 
       {/* Content */}
-      <div
-        className={`w-full md:w-1/2 pl-10 md:pl-0 transition-all duration-700 ease-out will-change-transform ${
-          isVisible ? "opacity-100 translate-x-0" : `opacity-0 ${isLeft ? "md:-translate-x-10" : "md:translate-x-10"}`
-        } ${isLeft ? "md:pr-10 md:text-right" : "md:pl-10"}`}
-        style={{ 
-          transitionDelay: `${index * 100 + 100}ms`,
-          transform: isVisible ? `translateX(${mouseOffset}px)` : undefined
-        }}
+      <motion.div
+        className={`w-full md:w-1/2 pl-10 md:pl-0 ${isLeft ? "md:pr-10 md:text-right" : "md:pl-10"}`}
+        animate={{ x: mouseOffset }}
+        transition={{ type: "spring", stiffness: 150, damping: 20 }}
       >
-        <div
-          className={`inline-flex items-center gap-3 p-4 rounded-lg bg-card border border-border hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1 ${
+        <motion.div
+          className={`inline-flex items-center gap-3 p-4 rounded-lg bg-card border border-border ${
             isLeft ? "md:flex-row-reverse" : ""
           }`}
+          whileHover={{
+            y: -5,
+            scale: 1.02,
+            borderColor: "hsl(var(--primary) / 0.3)",
+            boxShadow: "0 20px 40px -15px hsl(var(--primary) / 0.15)",
+          }}
+          transition={{ duration: 0.3 }}
         >
-          <div className="p-2 rounded-md bg-primary/10 text-primary transition-transform duration-300 hover:scale-110">
+          <motion.div
+            className="p-2 rounded-md bg-primary/10 text-primary"
+            whileHover={{ scale: 1.15, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
             <Icon className="w-4 h-4" />
-          </div>
+          </motion.div>
           <div className={isLeft ? "md:text-right" : ""}>
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
               <span>{date}</span>
@@ -162,11 +243,11 @@ function TimelineItem({ icon: Icon, date, time, title, description, index, isLef
             <h3 className="font-semibold">{title}</h3>
             <p className="text-sm text-muted-foreground mt-0.5">{description}</p>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Spacer for opposite side */}
       <div className="hidden md:block w-1/2" />
-    </div>
+    </motion.div>
   );
 }

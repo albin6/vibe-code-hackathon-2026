@@ -1,7 +1,8 @@
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Sparkles, Zap, Globe, Rocket, Code2, Trophy } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { useMousePosition, useBackgroundParallax } from "@/hooks/useParallaxEffects";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
 
 const experiences = [
   {
@@ -11,7 +12,6 @@ const experiences = [
     gradient: "from-cyan-500/20 to-blue-600/20",
     iconBg: "bg-cyan-500/10",
     iconColor: "text-cyan-400",
-    delay: 0,
   },
   {
     icon: Zap,
@@ -20,7 +20,6 @@ const experiences = [
     gradient: "from-yellow-500/20 to-orange-600/20",
     iconBg: "bg-yellow-500/10",
     iconColor: "text-yellow-400",
-    delay: 100,
   },
   {
     icon: Globe,
@@ -29,7 +28,6 @@ const experiences = [
     gradient: "from-green-500/20 to-emerald-600/20",
     iconBg: "bg-green-500/10",
     iconColor: "text-green-400",
-    delay: 200,
   },
   {
     icon: Rocket,
@@ -38,7 +36,6 @@ const experiences = [
     gradient: "from-purple-500/20 to-pink-600/20",
     iconBg: "bg-purple-500/10",
     iconColor: "text-purple-400",
-    delay: 300,
   },
   {
     icon: Code2,
@@ -47,7 +44,6 @@ const experiences = [
     gradient: "from-pink-500/20 to-rose-600/20",
     iconBg: "bg-pink-500/10",
     iconColor: "text-pink-400",
-    delay: 400,
   },
   {
     icon: Trophy,
@@ -56,14 +52,48 @@ const experiences = [
     gradient: "from-amber-500/20 to-yellow-600/20",
     iconBg: "bg-amber-500/10",
     iconColor: "text-amber-400",
-    delay: 500,
   },
 ];
 
 export function ExperienceSection() {
-  const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
-  const mouse = useMousePosition(0.5);
-  const { ref: sectionRef, offset } = useBackgroundParallax(0.4);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const mouse = useMousePosition(1);
+  const float1 = useFloatingAnimation(0);
+  const float2 = useFloatingAnimation(2);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const springConfig = { stiffness: 100, damping: 30 };
+  const backgroundY1 = useSpring(useTransform(scrollYProgress, [0, 1], [-50, 200]), springConfig);
+  const backgroundY2 = useSpring(useTransform(scrollYProgress, [0, 1], [50, -150]), springConfig);
+  const gridY = useSpring(useTransform(scrollYProgress, [0, 1], [0, 100]), springConfig);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 80, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.7,
+        ease: "easeOut" as const,
+      },
+    },
+  };
 
   return (
     <section
@@ -71,53 +101,86 @@ export function ExperienceSection() {
       id="experience"
       className="relative py-24 md:py-32 overflow-hidden"
     >
-      {/* Animated background gradients with parallax */}
+      {/* Animated background gradients with enhanced parallax */}
       <div className="absolute inset-0 overflow-hidden">
-        <div 
-          className="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] will-change-transform" 
-          style={{ transform: `translateY(${-offset * 0.6}px) translate(${mouse.x * 1.5}px, ${mouse.y * 1.5}px)` }}
+        <motion.div
+          className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-primary/8 rounded-full blur-[120px]"
+          style={{ y: backgroundY1 }}
+          animate={{
+            x: mouse.x * 2 + float1.y,
+            rotate: float1.rotate,
+          }}
+          transition={{ type: "spring", stiffness: 50, damping: 25 }}
         />
-        <div 
-          className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] will-change-transform" 
-          style={{ transform: `translateY(${-offset * 0.4}px) translate(${-mouse.x}px, ${-mouse.y}px)` }}
+        <motion.div
+          className="absolute bottom-1/4 -right-32 w-[500px] h-[500px] bg-secondary/8 rounded-full blur-[120px]"
+          style={{ y: backgroundY2 }}
+          animate={{
+            x: -mouse.x * 1.5 + float2.y,
+            rotate: -float2.rotate,
+          }}
+          transition={{ type: "spring", stiffness: 50, damping: 25 }}
         />
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/3 rounded-full blur-[120px] will-change-transform"
-          style={{ transform: `translate(-50%, -50%) translateY(${-offset * 0.2}px)` }}
+        <motion.div
+          className="absolute top-1/2 left-1/2 w-[700px] h-[700px] bg-accent/5 rounded-full blur-[150px]"
+          style={{ 
+            x: "-50%", 
+            y: useSpring(useTransform(scrollYProgress, [0, 1], ["-50%", "-30%"]), springConfig)
+          }}
         />
       </div>
 
-      {/* Grid pattern */}
-      <div 
-        className="absolute inset-0 bg-grid opacity-5 will-change-transform"
-        style={{ transform: `translateY(${-offset * 0.2}px)` }}
+      {/* Grid pattern with scroll */}
+      <motion.div
+        className="absolute inset-0 bg-grid opacity-5"
+        style={{ y: gridY }}
       />
 
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
-        <div
-          ref={headerRef}
-          className={`text-center mb-16 transition-all duration-700 ${
-            headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-          }`}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 60 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm font-medium mb-4">
+          <motion.span
+            className="inline-block px-4 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm font-medium mb-4"
+            animate={{ x: mouse.x * 0.3, y: mouse.y * 0.3 }}
+            transition={{ type: "spring", stiffness: 150, damping: 15 }}
+            whileHover={{ scale: 1.05 }}
+          >
             Why Join Us
-          </span>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-4">
+          </motion.span>
+          <motion.h2
+            className="font-display font-bold text-3xl sm:text-4xl md:text-5xl mb-4"
+            animate={{ x: mouse.x * 0.15, y: mouse.y * 0.15 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          >
             The <span className="gradient-text">Experience</span>
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          </motion.h2>
+          <motion.p
+            className="text-muted-foreground text-lg max-w-2xl mx-auto"
+            animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          >
             More than just a hackathon — it's a launchpad for your next big idea.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Experience Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
           {experiences.map((exp, index) => (
-            <ExperienceCard key={exp.title} {...exp} index={index} mouse={mouse} />
+            <ExperienceCard key={exp.title} {...exp} index={index} mouse={mouse} variants={cardVariants} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -130,9 +193,9 @@ interface ExperienceCardProps {
   gradient: string;
   iconBg: string;
   iconColor: string;
-  delay: number;
   index: number;
   mouse: { x: number; y: number };
+  variants: any;
 }
 
 function ExperienceCard({
@@ -142,29 +205,29 @@ function ExperienceCard({
   gradient,
   iconBg,
   iconColor,
-  delay,
   index,
   mouse,
+  variants,
 }: ExperienceCardProps) {
-  const { ref, isVisible } = useScrollReveal();
-
-  // Vary mouse effect based on card position
-  const mouseMultiplier = (index % 3 - 1) * 0.05;
+  const xMultiplier = (index % 3 - 1) * 0.15;
 
   return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
-      }`}
-      style={{ 
-        transitionDelay: `${delay}ms`,
-        transform: isVisible ? `translate(${mouse.x * mouseMultiplier}px, ${mouse.y * 0.05}px)` : undefined
+    <motion.div
+      variants={variants}
+      whileHover={{
+        scale: 1.04,
+        y: -10,
+        transition: { duration: 0.3, ease: "easeOut" }
       }}
+      animate={{
+        x: mouse.x * xMultiplier,
+        y: mouse.y * 0.1,
+      }}
+      transition={{ type: "spring", stiffness: 150, damping: 20 }}
     >
       <GlowCard
         variant={index % 3 === 0 ? "cyan" : index % 3 === 1 ? "purple" : "magenta"}
-        className="group h-full relative overflow-hidden hover:scale-[1.02] transition-transform duration-300"
+        className="group h-full relative overflow-hidden"
       >
         {/* Gradient overlay on hover */}
         <div
@@ -174,11 +237,13 @@ function ExperienceCard({
         {/* Content */}
         <div className="relative z-10">
           {/* Icon */}
-          <div
-            className={`inline-flex p-3 rounded-xl ${iconBg} ${iconColor} mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
+          <motion.div
+            className={`inline-flex p-3 rounded-xl ${iconBg} ${iconColor} mb-4`}
+            whileHover={{ scale: 1.2, rotate: 8 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
             <Icon className="w-6 h-6" />
-          </div>
+          </motion.div>
 
           {/* Title */}
           <h3 className="font-display font-semibold text-xl mb-2 group-hover:text-primary transition-colors duration-300">
@@ -197,6 +262,6 @@ function ExperienceCard({
         {/* Corner decoration */}
         <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-gradient-to-tl from-primary/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </GlowCard>
-    </div>
+    </motion.div>
   );
 }
