@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Zap } from "lucide-react";
 import { NeonButton } from "@/components/ui/NeonButton";
 import { cn } from "@/lib/utils";
+import { useMousePosition } from "@/hooks/useParallaxEffects";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -13,6 +14,7 @@ const navLinks = [
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mouse = useMousePosition(0.2);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,14 +43,15 @@ export function Header() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
+          {/* Logo with mouse effect */}
           <a
             href="#home"
             onClick={(e) => {
               e.preventDefault();
               scrollToSection("#home");
             }}
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-2 group will-change-transform"
+            style={{ transform: `translate(${mouse.x * 0.15}px, ${mouse.y * 0.15}px)` }}
           >
             <Zap className="w-6 h-6 text-primary" />
             <span className="font-display font-semibold text-lg">
@@ -58,7 +61,7 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {navLinks.map((link, index) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -66,7 +69,8 @@ export function Header() {
                   e.preventDefault();
                   scrollToSection(link.href);
                 }}
-                className="font-medium text-muted-foreground hover:text-primary transition-colors duration-200 relative group"
+                className="font-medium text-muted-foreground hover:text-primary transition-colors duration-200 relative group will-change-transform"
+                style={{ transform: `translate(${mouse.x * 0.08 * (index - 1.5)}px, ${mouse.y * 0.05}px)` }}
               >
                 {link.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_10px_hsl(185_100%_50%/0.5)]" />
@@ -75,7 +79,10 @@ export function Header() {
           </nav>
 
           {/* CTA Button */}
-          <div className="hidden md:block">
+          <div 
+            className="hidden md:block will-change-transform"
+            style={{ transform: `translate(${-mouse.x * 0.1}px, ${mouse.y * 0.05}px)` }}
+          >
             <NeonButton size="default">
               Submit Your Entry
             </NeonButton>

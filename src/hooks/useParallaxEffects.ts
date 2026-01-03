@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // Simple background parallax - backgrounds move slower than scroll
 export function useBackgroundParallax(speed: number = 0.3) {
@@ -31,7 +31,7 @@ export function useBackgroundParallax(speed: number = 0.3) {
   return { ref, offset };
 }
 
-// Mouse position tracking with smooth easing
+// Mouse position tracking with smooth easing - MORE PRONOUNCED
 export function useMousePosition(intensity: number = 1) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const target = useRef({ x: 0, y: 0 });
@@ -42,15 +42,17 @@ export function useMousePosition(intensity: number = 1) {
     const handleMouseMove = (e: MouseEvent) => {
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
+      // Increased base movement from 20 to 40
       target.current = {
-        x: ((e.clientX - centerX) / centerX) * 20 * intensity,
-        y: ((e.clientY - centerY) / centerY) * 20 * intensity,
+        x: ((e.clientX - centerX) / centerX) * 40 * intensity,
+        y: ((e.clientY - centerY) / centerY) * 40 * intensity,
       };
     };
 
     const animate = () => {
-      current.current.x += (target.current.x - current.current.x) * 0.08;
-      current.current.y += (target.current.y - current.current.y) * 0.08;
+      // Faster easing for more responsive feel
+      current.current.x += (target.current.x - current.current.x) * 0.12;
+      current.current.y += (target.current.y - current.current.y) * 0.12;
       
       setPosition({
         x: Math.round(current.current.x * 100) / 100,
