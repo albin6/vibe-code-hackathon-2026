@@ -107,18 +107,15 @@ export function Header() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
-            <NeonButton
-              size="default"
-              onClick={() =>
-                window.open(
-                  "https://form.typeform.com/to/aEK4REVV",
-                  "_blank",
-                  "noopener,noreferrer"
-                )
-              }
-              >
-              Submit Your Entry
-            </NeonButton>
+            <a
+              href="https://form.typeform.com/to/aEK4REVV"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <NeonButton size="default">
+                Submit Your Entry
+              </NeonButton>
+            </a>
           </motion.div>
 
           {/* Mobile Menu Toggle */}
