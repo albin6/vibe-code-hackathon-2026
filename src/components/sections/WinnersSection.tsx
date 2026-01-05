@@ -1,9 +1,12 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Trophy, Medal, Award, ExternalLink } from "lucide-react";
 import { GlowCard } from "@/components/ui/GlowCard";
 import { NeonButton } from "@/components/ui/NeonButton";
-import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
+import {
+  useMousePosition,
+  useFloatingAnimation,
+} from "@/hooks/useParallaxEffects";
 
 interface Winner {
   place: 1 | 2 | 3;
@@ -19,7 +22,8 @@ const placeholderWinners: Winner[] = [
     place: 1,
     teamName: "Team Quantum",
     projectName: "NeuroBridge AI",
-    description: "An AI-powered platform that bridges communication gaps for neurodivergent individuals using adaptive language processing.",
+    description:
+      "An AI-powered platform that bridges communication gaps for neurodivergent individuals using adaptive language processing.",
     techStack: ["React", "Python", "TensorFlow", "Supabase"],
     projectUrl: "#",
   },
@@ -27,7 +31,8 @@ const placeholderWinners: Winner[] = [
     place: 2,
     teamName: "Code Crusaders",
     projectName: "EcoTrack",
-    description: "A decentralized carbon footprint tracking system using blockchain for transparent environmental impact reporting.",
+    description:
+      "A decentralized carbon footprint tracking system using blockchain for transparent environmental impact reporting.",
     techStack: ["Next.js", "Solidity", "IPFS", "The Graph"],
     projectUrl: "#",
   },
@@ -35,7 +40,8 @@ const placeholderWinners: Winner[] = [
     place: 3,
     teamName: "Binary Builders",
     projectName: "MedSync",
-    description: "A real-time medical record synchronization platform ensuring seamless data sharing across healthcare providers.",
+    description:
+      "A real-time medical record synchronization platform ensuring seamless data sharing across healthcare providers.",
     techStack: ["TypeScript", "Node.js", "PostgreSQL", "Redis"],
     projectUrl: "#",
   },
@@ -46,7 +52,16 @@ interface WinnersSectionProps {
   isVisible?: boolean;
 }
 
-export function WinnersSection({ winners = placeholderWinners, isVisible = false }: WinnersSectionProps) {
+export function WinnersSection({
+  winners = placeholderWinners,
+  isVisible = false,
+}: WinnersSectionProps) {
+  // Don't run any client-only hooks until we've mounted — avoids "Target ref is defined but not hydrated" errors
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!isVisible || !mounted) return null;
+
   const sectionRef = useRef<HTMLDivElement>(null);
   const mouse = useMousePosition(1);
   const float1 = useFloatingAnimation(0);
@@ -54,12 +69,18 @@ export function WinnersSection({ winners = placeholderWinners, isVisible = false
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const springConfig = { stiffness: 100, damping: 30 };
-  const backgroundY1 = useSpring(useTransform(scrollYProgress, [0, 1], [-50, 150]), springConfig);
-  const backgroundY2 = useSpring(useTransform(scrollYProgress, [0, 1], [50, -100]), springConfig);
+  const backgroundY1 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [-50, 150]),
+    springConfig
+  );
+  const backgroundY2 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [50, -100]),
+    springConfig
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -113,7 +134,11 @@ export function WinnersSection({ winners = placeholderWinners, isVisible = false
   };
 
   return (
-    <section id="winners" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden">
+    <section
+      id="winners"
+      ref={sectionRef}
+      className="relative py-20 md:py-32 overflow-hidden"
+    >
       {/* Background decorations with enhanced parallax */}
       <motion.div
         className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-yellow-500/8 rounded-full blur-[120px]"
@@ -163,7 +188,8 @@ export function WinnersSection({ winners = placeholderWinners, isVisible = false
             animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
           >
-            Congratulations to all participants! Here are the outstanding projects that impressed our judges.
+            Congratulations to all participants! Here are the outstanding
+            projects that impressed our judges.
           </motion.p>
         </motion.div>
 
@@ -217,7 +243,15 @@ interface WinnerCardProps {
   variants: any;
 }
 
-function WinnerCard({ winner, config, Icon, isFirst, displayIndex, mouse, variants }: WinnerCardProps) {
+function WinnerCard({
+  winner,
+  config,
+  Icon,
+  isFirst,
+  displayIndex,
+  mouse,
+  variants,
+}: WinnerCardProps) {
   const xMultiplier = (displayIndex - 1) * 0.15;
 
   return (
@@ -227,7 +261,7 @@ function WinnerCard({ winner, config, Icon, isFirst, displayIndex, mouse, varian
       whileHover={{
         scale: isFirst ? 1.08 : 1.04,
         y: -12,
-        transition: { duration: 0.3, ease: "easeOut" }
+        transition: { duration: 0.3, ease: "easeOut" },
       }}
       animate={{
         x: mouse.x * xMultiplier,
@@ -252,10 +286,16 @@ function WinnerCard({ winner, config, Icon, isFirst, displayIndex, mouse, varian
 
         {/* Content */}
         <div className="pr-16">
-          <span className="text-sm font-medium text-muted-foreground">{config.label}</span>
-          <h3 className="font-display font-bold text-2xl mt-1 mb-1">{winner.projectName}</h3>
+          <span className="text-sm font-medium text-muted-foreground">
+            {config.label}
+          </span>
+          <h3 className="font-display font-bold text-2xl mt-1 mb-1">
+            {winner.projectName}
+          </h3>
           <p className="text-sm text-primary mb-4">by {winner.teamName}</p>
-          <p className="text-muted-foreground text-sm mb-4">{winner.description}</p>
+          <p className="text-muted-foreground text-sm mb-4">
+            {winner.description}
+          </p>
 
           {/* Tech stack */}
           <div className="flex flex-wrap gap-2 mb-4">

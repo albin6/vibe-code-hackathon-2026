@@ -1,0 +1,490 @@
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { CursorGlow } from "@/components/ui/CursorGlow";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
+
+const genders = ["Male", "Female", "Other"] as const;
+
+const ParticipantSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  age: z
+    .number({ invalid_type_error: "Age is required" })
+    .int()
+    .min(10, "Minimum age is 10")
+    .max(99, "Maximum age is 99"),
+  gender: z.enum(genders, { required_error: "Gender is required" }),
+  primaryPhone: z.string().min(1, "Primary phone is required"),
+  secondaryPhone: z.string().optional().or(z.literal("")),
+});
+
+const RegistrationSchema = z.object({
+  participants: z.array(ParticipantSchema).min(1).max(4),
+});
+
+type RegistrationForm = z.infer<typeof RegistrationSchema>;
+
+export default function RegistrationPage() {
+  const [step, setStep] = useState(1);
+  const [count, setCount] = useState<number | null>(null);
+
+  const form = useForm<RegistrationForm>({
+    resolver: zodResolver(RegistrationSchema),
+    defaultValues: { participants: [] },
+    mode: "onTouched",
+  });
+
+  const { handleSubmit, control, reset, getValues } = form;
+
+  function startStep2(selectedCount: number) {
+    setCount(selectedCount);
+
+    const defaults = Array.from({ length: selectedCount }).map(() => ({
+      fullName: "",
+      age: 18,
+      gender: "Male" as (typeof genders)[number],
+      primaryPhone: "",
+      secondaryPhone: "",
+    }));
+
+    reset({ participants: defaults });
+    setStep(2);
+  }
+
+  function onBack() {
+    setStep((s) => Math.max(1, s - 1));
+  }
+
+  function onNextFromStep2() {
+    // Trigger validation across the form for step 2 fields
+    handleSubmit(() => setStep(3))();
+  }
+
+  async function handlePaymentAndSubmit() {
+    // Placeholder payment flow simulation
+    toast({
+      title: "Processing payment...",
+      description: "Simulating payment gateway.",
+    });
+
+    // fake delay
+    await new Promise((r) => setTimeout(r, 800));
+
+    // simulate payment success
+    toast({
+      title: "Payment successful",
+      description: "Thank you! Submitting your registration...",
+    });
+
+    // Submit to Google Sheets (placeholder)
+    await submitToGoogleSheets(getValues());
+
+    toast({
+      title: "Registration submitted",
+      description: "Participant details sent to Google Sheets (placeholder).",
+    });
+
+    // After completion, reset and redirect to home
+    reset({ participants: [] });
+    setCount(null);
+    setStep(1);
+  }
+
+  async function submitToGoogleSheets(data: RegistrationForm) {
+    // Placeholder stub. Replace with real endpoint or serverless function to submit to Google Sheets.
+    console.log("Submitting to Google Sheets (placeholder):", data);
+
+    // Fake network call
+    await new Promise((r) => setTimeout(r, 600));
+
+    return { ok: true };
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <CursorGlow />
+      <Header />
+      <main className="py-12">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="bg-card p-8 rounded-lg shadow-lg">
+            <h1 className="font-display text-2xl mb-4">
+              Participant Registration
+            </h1>
+
+            {/* Landscape layout */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+              <aside className="md:col-span-1 md:sticky md:top-24 md:w-80">
+                <div className="p-5 border rounded-lg mb-5 bg-card/60 shadow-sm">
+                  <h3 className="font-semibold text-lg">Registration</h3>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Follow the steps to complete team registration.
+                  </p>
+                  <ol className="mt-5 space-y-3">
+                    <li className="flex items-start gap-3">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          step === 1
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted/40"
+                        }`}
+                      >
+                        1
+                      </div>
+                      <div>
+                        <div className="font-medium">Count</div>
+                        <div className="text-sm text-muted-foreground">
+                          Select number of participants
+                        </div>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          step === 2
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted/40"
+                        }`}
+                      >
+                        2
+                      </div>
+                      <div>
+                        <div className="font-medium">Details</div>
+                        <div className="text-sm text-muted-foreground">
+                          Fill participant information
+                        </div>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          step === 3
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted/40"
+                        }`}
+                      >
+                        3
+                      </div>
+                      <div>
+                        <div className="font-medium">Review</div>
+                        <div className="text-sm text-muted-foreground">
+                          Confirm & submit payment
+                        </div>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+
+                <div className="p-5 border rounded-lg bg-card/60 shadow-sm">
+                  <div className="text-sm text-muted-foreground">
+                    Selected participants
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    {getValues().participants?.length ? (
+                      getValues().participants.map((p, i) => (
+                        <div key={i} className="text-sm">
+                          <strong>
+                            {i === 0 ? "Team Captain" : `Member ${i}`}
+                          </strong>
+                          <div className="text-xs text-muted-foreground">
+                            {p.fullName || "—"}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-sm text-muted-foreground">
+                        None selected
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </aside>
+
+              <main className="md:col-span-2">
+                <div className="bg-card p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+                  {step === 1 && (
+                    <div>
+                      <p className="mb-4">
+                        Select number of participants (1-4)
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        {[1, 2, 3, 4].map((n) => (
+                          <button
+                            key={n}
+                            type="button"
+                            aria-pressed={count === n}
+                            onClick={() => startStep2(n)}
+                            className={`flex flex-col items-center justify-center w-full p-6 min-h-[96px] rounded-lg transition-shadow text-center ${
+                              count === n
+                                ? "bg-primary/10 border border-primary shadow-md scale-105"
+                                : "bg-card/50 border border-border hover:shadow-sm"
+                            }`}
+                          >
+                            <div className="text-3xl font-bold">{n}</div>
+                            <div className="text-sm text-muted-foreground mt-1">
+                              {n === 1
+                                ? "Solo (Captain only)"
+                                : `${n} participants`}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {step === 2 && (
+                    <Form {...form}>
+                      <form onSubmit={(e) => e.preventDefault()}>
+                        <div className="space-y-6">
+                          <p className="text-sm text-muted-foreground">
+                            Fill in participant details. The first participant
+                            is the <strong>Team Captain</strong>.
+                          </p>
+
+                          {Array.from({ length: count ?? 0 }).map((_, idx) => (
+                            <section
+                              key={idx}
+                              className={`p-5 border rounded-lg ${
+                                idx === 0 ? "ring-2 ring-primary/10" : ""
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-semibold text-lg">
+                                  {idx === 0
+                                    ? "Team Captain"
+                                    : `Team Member ${idx}`}
+                                </h3>
+                                <div className="text-sm text-muted-foreground">
+                                  #{idx + 1}
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={control}
+                                  name={`participants.${idx}.fullName` as const}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Full Name</FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          placeholder="Full name"
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <div className="grid grid-cols-2 gap-4">
+                                  <FormField
+                                    control={control}
+                                    name={`participants.${idx}.age` as const}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Age</FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            type="number"
+                                            min={10}
+                                            max={99}
+                                            {...field}
+                                            onChange={(e) =>
+                                              field.onChange(
+                                                Number(e.target.value || 0)
+                                              )
+                                            }
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+
+                                  <FormField
+                                    control={control}
+                                    name={`participants.${idx}.gender` as const}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Gender</FormLabel>
+                                        <FormControl>
+                                          <select
+                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base text-foreground"
+                                            {...field}
+                                          >
+                                            {genders.map((g) => (
+                                              <option key={g} value={g}>
+                                                {g}
+                                              </option>
+                                            ))}
+                                          </select>
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                  control={control}
+                                  name={
+                                    `participants.${idx}.primaryPhone` as const
+                                  }
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>
+                                        Primary Phone Number{" "}
+                                        <span className="text-xs text-muted-foreground">
+                                          (Must have WhatsApp)
+                                        </span>
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          placeholder="Primary phone"
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <FormField
+                                  control={control}
+                                  name={
+                                    `participants.${idx}.secondaryPhone` as const
+                                  }
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>
+                                        Secondary Phone Number (optional)
+                                      </FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          placeholder="Secondary phone"
+                                          {...field}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+                            </section>
+                          ))}
+
+                          <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-3">
+                            <div className="w-full sm:w-auto">
+                              <Button
+                                variant="ghost"
+                                onClick={onBack}
+                                className="w-full sm:w-auto"
+                              >
+                                Back
+                              </Button>
+                            </div>
+                            <div className="w-full sm:w-auto">
+                              <Button
+                                onClick={onNextFromStep2}
+                                className="w-full sm:w-auto"
+                              >
+                                Next
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </Form>
+                  )}
+
+                  {step === 3 && (
+                    <div>
+                      <h2 className="font-semibold mb-4">Review & Complete</h2>
+
+                      <div className="space-y-4">
+                        {getValues().participants.map((p, i) => (
+                          <div
+                            key={i}
+                            className="p-4 border rounded-lg bg-background/50"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <strong>
+                                  {i === 0
+                                    ? "Team Captain"
+                                    : `Team Member ${i}`}
+                                </strong>
+                                <div className="text-sm text-muted-foreground">
+                                  {p.fullName}
+                                </div>
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                Age: {p.age}
+                              </div>
+                            </div>
+                            <div className="mt-2 text-sm">
+                              <div>{p.gender}</div>
+                              <div>Primary: {p.primaryPhone}</div>
+                              {p.secondaryPhone && (
+                                <div>Secondary: {p.secondaryPhone}</div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+
+                        <div className="p-6 border rounded-lg bg-card/70">
+                          <h3 className="font-medium mb-2">Payment</h3>
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Placeholder: Payment gateway integration will be
+                            added later.
+                          </p>
+                          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                            <div className="w-full sm:w-auto">
+                              <Button
+                                variant="ghost"
+                                onClick={() => setStep(2)}
+                                className="w-full sm:w-auto"
+                              >
+                                Back
+                              </Button>
+                            </div>
+                            <div className="w-full sm:w-auto">
+                              <Button
+                                onClick={handlePaymentAndSubmit}
+                                className="w-full sm:w-auto"
+                              >
+                                Pay & Submit
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </main>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}

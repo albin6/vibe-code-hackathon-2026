@@ -2,7 +2,11 @@ import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { NeonButton } from "@/components/ui/NeonButton";
-import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
+import { useNavigate } from "react-router-dom";
+import {
+  useMousePosition,
+  useFloatingAnimation,
+} from "@/hooks/useParallaxEffects";
 
 export function HeroSection() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,14 +14,19 @@ export function HeroSection() {
   const mouse = useMousePosition(1.5);
   const float1 = useFloatingAnimation(0);
   const float2 = useFloatingAnimation(2);
-  
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end start"],
   });
-  
+
+  const navigate = useNavigate();
+
   const springConfig = { stiffness: 100, damping: 30 };
-  const y = useSpring(useTransform(scrollYProgress, [0, 1], [0, 300]), springConfig);
+  const y = useSpring(
+    useTransform(scrollYProgress, [0, 1], [0, 300]),
+    springConfig
+  );
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
 
@@ -83,10 +92,17 @@ export function HeroSection() {
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2);
         const gradient = ctx.createRadialGradient(
-          particle.x, particle.y, 0,
-          particle.x, particle.y, particle.size * 3
+          particle.x,
+          particle.y,
+          0,
+          particle.x,
+          particle.y,
+          particle.size * 3
         );
-        gradient.addColorStop(0, `hsla(${particle.hue}, 100%, 60%, ${particle.opacity * 0.5})`);
+        gradient.addColorStop(
+          0,
+          `hsla(${particle.hue}, 100%, 60%, ${particle.opacity * 0.5})`
+        );
         gradient.addColorStop(1, "transparent");
         ctx.fillStyle = gradient;
         ctx.fill();
@@ -143,24 +159,21 @@ export function HeroSection() {
 
   return (
     <section
-      id="home" 
+      id="home"
       ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Animated Background */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 z-0"
-      />
+      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
 
       {/* Grid overlay with scroll parallax */}
-      <motion.div 
-        className="absolute inset-0 bg-grid opacity-20 z-0" 
+      <motion.div
+        className="absolute inset-0 bg-grid opacity-20 z-0"
         style={{ y }}
       />
 
       {/* Floating gradient orbs with mouse + floating animation */}
-      <motion.div 
+      <motion.div
         className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/15 rounded-full blur-[120px]"
         animate={{
           x: mouse.x * 2.5 + float1.y,
@@ -169,7 +182,7 @@ export function HeroSection() {
         }}
         transition={{ type: "spring", stiffness: 50, damping: 20 }}
       />
-      <motion.div 
+      <motion.div
         className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-secondary/15 rounded-full blur-[100px]"
         animate={{
           x: -mouse.x * 2 + float2.y,
@@ -178,7 +191,7 @@ export function HeroSection() {
         }}
         transition={{ type: "spring", stiffness: 50, damping: 20 }}
       />
-      <motion.div 
+      <motion.div
         className="absolute top-1/2 right-1/3 w-[300px] h-[300px] bg-accent/10 rounded-full blur-[80px]"
         animate={{
           x: mouse.x * 1.5,
@@ -191,7 +204,7 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-gradient-radial from-transparent via-background/50 to-background z-0" />
 
       {/* Content with stagger animations */}
-      <motion.div 
+      <motion.div
         className="relative z-10 container mx-auto px-4 py-20 text-center"
         style={{ opacity, scale }}
         variants={containerVariants}
@@ -199,7 +212,7 @@ export function HeroSection() {
         animate="visible"
       >
         {/* Badge with mouse effect */}
-        <motion.div 
+        <motion.div
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6"
           variants={itemVariants}
           whileHover={{ scale: 1.05 }}
@@ -211,14 +224,14 @@ export function HeroSection() {
         </motion.div>
 
         {/* Main Title */}
-        <motion.h1 
+        <motion.h1
           className="font-display font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 leading-tight"
           variants={itemVariants}
           animate={{ x: mouse.x * 0.2, y: mouse.y * 0.2 }}
           transition={{ type: "spring", stiffness: 100, damping: 20 }}
         >
           <span className="block text-foreground">Vibe Coding</span>
-          <motion.span 
+          <motion.span
             className="block gradient-text"
             animate={{ x: mouse.x * 0.15, y: mouse.y * 0.15 }}
           >
@@ -227,36 +240,44 @@ export function HeroSection() {
         </motion.h1>
 
         {/* Subtitle */}
-        <motion.p 
+        <motion.p
           className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8"
           variants={itemVariants}
           animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
           transition={{ type: "spring", stiffness: 100, damping: 20 }}
         >
-          48 hours of innovation, creativity, and code.
-          Build the future with the world's best developers.
+          48 hours of innovation, creativity, and code. Build the future with
+          the world's best developers.
         </motion.p>
 
         {/* CTA Buttons */}
-        <motion.div 
+        <motion.div
           className="flex flex-col sm:flex-row items-center justify-center gap-3"
           variants={itemVariants}
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-            <NeonButton size="lg" className="w-full sm:w-auto">
+            <NeonButton
+              size="lg"
+              className="w-full sm:w-auto"
+              onClick={() => navigate("/registration")}
+            >
               Participate Now
               <ArrowRight className="w-4 h-4" />
             </NeonButton>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-            <NeonButton variant="outline" size="lg" className="w-full sm:w-auto">
+            <NeonButton
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto"
+            >
               View Last Year
             </NeonButton>
           </motion.div>
         </motion.div>
 
         {/* Stats */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 max-w-2xl mx-auto"
           variants={itemVariants}
         >
@@ -266,38 +287,40 @@ export function HeroSection() {
             { value: "48h", label: "Of Coding" },
             { value: "100+", label: "Projects" },
           ].map((stat, index) => (
-            <motion.div 
-              key={stat.label} 
+            <motion.div
+              key={stat.label}
               className="text-center"
               whileHover={{ scale: 1.1, y: -5 }}
-              animate={{ 
-                x: mouse.x * (0.08 * (index - 1.5)), 
-                y: mouse.y * 0.06 
+              animate={{
+                x: mouse.x * (0.08 * (index - 1.5)),
+                y: mouse.y * 0.06,
               }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
             >
               <div className="font-display font-semibold text-xl sm:text-2xl md:text-3xl text-primary">
                 {stat.value}
               </div>
-              <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+              <div className="text-sm text-muted-foreground mt-1">
+                {stat.label}
+              </div>
             </motion.div>
           ))}
         </motion.div>
       </motion.div>
 
       {/* Scroll indicator */}
-      <motion.div 
+      <motion.div
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.8 }}
       >
-        <motion.div 
+        <motion.div
           className="w-6 h-10 rounded-full border-2 border-primary/50 flex items-start justify-center p-2"
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <motion.div 
+          <motion.div
             className="w-1.5 h-3 rounded-full bg-primary"
             animate={{ opacity: [0.5, 1, 0.5], scaleY: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}

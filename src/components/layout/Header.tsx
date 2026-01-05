@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, X, Zap } from "lucide-react";
 import { NeonButton } from "@/components/ui/NeonButton";
@@ -6,16 +7,18 @@ import { cn } from "@/lib/utils";
 import { useMousePosition } from "@/hooks/useParallaxEffects";
 
 const navLinks = [
-  { label: "Home", href: "#home" },
+  { label: "Home", href: "/" },
   { label: "Highlights", href: "#highlights" },
   { label: "Schedule", href: "#schedule" },
   { label: "Rules", href: "#rules" },
+  { label: "Register", href: "/registration" },
 ];
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mouse = useMousePosition(0.5);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,10 +29,15 @@ export function Header() {
   }, []);
 
   const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("#")) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else if (href.startsWith("/")) {
+      navigate(href);
     }
+
     setIsMobileMenuOpen(false);
   };
 
@@ -81,15 +89,15 @@ export function Header() {
                   scrollToSection(link.href);
                 }}
                 className="font-medium text-muted-foreground hover:text-primary transition-colors duration-200 relative group"
-                animate={{ 
-                  x: mouse.x * 0.1 * (index - 1.5), 
-                  y: mouse.y * 0.08 
+                animate={{
+                  x: mouse.x * 0.1 * (index - 1.5),
+                  y: mouse.y * 0.08,
                 }}
                 transition={{ type: "spring", stiffness: 150, damping: 15 }}
                 whileHover={{ scale: 1.1, y: -2 }}
               >
                 {link.label}
-                <motion.span 
+                <motion.span
                   className="absolute -bottom-1 left-0 h-0.5 bg-primary shadow-[0_0_10px_hsl(185_100%_50%/0.5)]"
                   initial={{ width: 0 }}
                   whileHover={{ width: "100%" }}
@@ -100,22 +108,19 @@ export function Header() {
           </nav>
 
           {/* CTA Button */}
-          <motion.div 
+          <motion.div
             className="hidden md:block"
             animate={{ x: -mouse.x * 0.15, y: mouse.y * 0.08 }}
             transition={{ type: "spring", stiffness: 150, damping: 15 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
-            <a
-              href="https://form.typeform.com/to/aEK4REVV"
-              target="_blank"
-              rel="noopener noreferrer"
+            <NeonButton
+              size="default"
+              onClick={() => navigate("/registration")}
             >
-              <NeonButton size="default">
-                Submit Your Entry
-              </NeonButton>
-            </a>
+              Submit Your Entry
+            </NeonButton>
           </motion.div>
 
           {/* Mobile Menu Toggle */}
@@ -125,7 +130,11 @@ export function Header() {
             aria-label="Toggle menu"
             whileTap={{ scale: 0.9 }}
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </motion.button>
         </div>
       </div>
@@ -151,9 +160,9 @@ export function Header() {
               }}
               className="font-medium text-muted-foreground hover:text-primary transition-colors py-2"
               initial={{ opacity: 0, x: -20 }}
-              animate={{ 
-                opacity: isMobileMenuOpen ? 1 : 0, 
-                x: isMobileMenuOpen ? 0 : -20 
+              animate={{
+                opacity: isMobileMenuOpen ? 1 : 0,
+                x: isMobileMenuOpen ? 0 : -20,
               }}
               transition={{ delay: index * 0.1 }}
             >
@@ -162,13 +171,20 @@ export function Header() {
           ))}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
-            animate={{ 
-              opacity: isMobileMenuOpen ? 1 : 0, 
-              y: isMobileMenuOpen ? 0 : 10 
+            animate={{
+              opacity: isMobileMenuOpen ? 1 : 0,
+              y: isMobileMenuOpen ? 0 : 10,
             }}
             transition={{ delay: 0.4 }}
           >
-            <NeonButton size="default" className="mt-2 w-full">
+            <NeonButton
+              size="default"
+              className="mt-2 w-full"
+              onClick={() => {
+                navigate("/registration");
+                setIsMobileMenuOpen(false);
+              }}
+            >
               Submit Your Entry
             </NeonButton>
           </motion.div>
