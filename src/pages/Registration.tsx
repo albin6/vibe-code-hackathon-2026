@@ -90,28 +90,49 @@ export default function RegistrationPage() {
       description: "Thank you! Submitting your registration...",
     });
 
-    // Submit to Google Sheets (placeholder)
-    await submitToGoogleSheets(getValues());
+    // Submit to Google Sheets via server API
+    try {
+      const resp = await submitToGoogleSheets(getValues());
+      toast({
+        title: "Registration submitted",
+        description: `Participant details sent (${resp.appended || "n"} rows).`,
+      });
 
-    toast({
-      title: "Registration submitted",
-      description: "Participant details sent to Google Sheets (placeholder).",
-    });
-
-    // After completion, reset and redirect to home
-    reset({ participants: [] });
-    setCount(null);
-    setStep(1);
+      // After completion, reset and redirect to home
+      reset({ participants: [] });
+      setCount(null);
+      setStep(1);
+    } catch (err: any) {
+      console.error("Sheets submit error", err);
+      toast({
+        title: "Submission failed",
+        description: String(err?.message || err),
+      });
+    }
   }
 
   async function submitToGoogleSheets(data: RegistrationForm) {
-    // Placeholder stub. Replace with real endpoint or serverless function to submit to Google Sheets.
-    console.log("Submitting to Google Sheets (placeholder):", data);
+    // POST to API server that appends data to Google Sheets
+    const apiBase =
+      import.meta.env.VITE_SHEETS_API_URL || "http://localhost:4001";
 
-    // Fake network call
-    await new Promise((r) => setTimeout(r, 600));
+    try {
+      const res = await fetch(`${apiBase}/sheets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ participants: data.participants }),
+      });
 
-    return { ok: true };
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || "Failed to submit to Sheets");
+      }
+
+      return await res.json();
+    } catch (err: any) {
+      console.error("submitToGoogleSheets error:", err?.message || err);
+      throw err;
+    }
   }
 
   return (
