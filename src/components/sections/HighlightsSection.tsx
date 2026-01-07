@@ -10,7 +10,7 @@ import {
 const highlights = [
   {
     icon: Clock,
-    title: "48 Hours",
+    title: "24 Hours",
     description: "Non-stop coding marathon to build your dream project",
     variant: "cyan" as const,
   },
@@ -36,7 +36,7 @@ const highlights = [
   {
     icon: Globe,
     title: "Offline Advantage",
-    description: "Learn in a focused, distraction-free environment.",
+    description: "Build in a focused, distraction-free environment.",
     variant: "purple" as const,
   },
   {

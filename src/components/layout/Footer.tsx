@@ -64,6 +64,7 @@ export function Footer() {
 
   return (
     <footer
+      id="map"
       ref={footerRef}
       className="relative border-t border-border/50 overflow-hidden"
     >
@@ -103,7 +104,7 @@ export function Footer() {
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8">
           {/* Brand */}
           <motion.div variants={itemVariants}>
             <motion.a
@@ -123,13 +124,12 @@ export function Footer() {
                 <div className="absolute inset-0 blur-md bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="font-display font-bold text-xl tracking-wider">
-                Vibe <span className="text-primary">Coding</span> Challenge
+                Vibe <span className="text-primary">Coding</span> Hackathon
               </span>
             </motion.a>
             <p className="text-muted-foreground text-sm max-w-xs">
-              Code. Create. Connect. — Offline @ Brocamp Kochi • 24 Hours.
-              Judges: Panel of 5 industry experts. Submission: GitHub repo,
-              README, working demo link, demo video.
+              Code. Create. Connect. <br />
+              Offline @Brototype Kochi • 24 Hours.
             </p>
           </motion.div>
 
@@ -182,6 +182,21 @@ export function Footer() {
               content.
             </p>
           </motion.div>
+
+          {/* Map */}
+          <motion.div variants={itemVariants}>
+            <h4 className="font-display font-semibold mb-4">Location</h4>
+            <div className="rounded-md overflow-hidden border">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1964.9755011076584!2d76.31942949839474!3d9.938034999999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0873e8b17e4e1f%3A0x631726fd9022096b!2sBrototype%20Kochi!5e0!3m2!1sen!2sin!4v1767771927928!5m2!1sen!2sin"
+                className="w-full h-44"
+                style={{ border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
+            </div>
+          </motion.div>
         </div>
 
         {/* Bottom bar */}
@@ -200,15 +215,7 @@ export function Footer() {
             className="text-muted-foreground text-sm"
             whileHover={{ scale: 1.05 }}
           >
-            Made with{" "}
-            <motion.span
-              className="text-accent inline-block"
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              ♥
-            </motion.span>{" "}
-            by the Vibe Coding Team
+            Made by the Vibe Coding Team
           </motion.p>
         </motion.div>
       </motion.div>

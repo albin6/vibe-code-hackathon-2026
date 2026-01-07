@@ -90,10 +90,16 @@ export function EventInfoSection() {
                   <h3 className="font-semibold">Event Snapshot</h3>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Vibe Coding Challenge — Code. Create. Connect.
+                  Vibe Coding Challenge <br></br> — Code. Create. Connect.
                 </p>
                 <p className="text-sm text-muted-foreground mt-3">
-                  Offline @ Brocamp Kochi • 24 Hours
+                  Offline @Brocamp Kochi • 24 Hours
+                </p>
+                <p className="text-sm text-muted-foreground mt-1 block">
+                  17th - 18th January 2026 - Day 1
+                </p>
+                <p className="text-sm text-muted-foreground mt-1 block">
+                  18th - 19th January 2026 - Day 2
                 </p>
               </div>
               <div className="mt-4">
@@ -121,15 +127,30 @@ export function EventInfoSection() {
                   <Calendar className="w-5 h-5 text-primary" />
                   <h3 className="font-semibold">Schedule</h3>
                 </div>
-                <ul className="text-sm text-muted-foreground space-y-2">
-                  <li>Day 1, 10:00 AM – Kickoff & Problem Reveal</li>
-                  <li>Day 1, 11:00 AM – Team networking icebreaker</li>
-                  <li>Day 1, 6:00 PM – Mid Check-in (mentor progress round)</li>
-                  <li>Day 1, 11:00 PM – Fun mini challenge/quiz</li>
-                  <li>Day 2, 10:00 AM – Submission Deadline</li>
-                  <li>Day 2, 11:00 AM – 3:00 PM – Judging</li>
-                  <li>Day 2, 4:00 PM – Results & Closing</li>
-                </ul>
+                <div className="space-y-4 text-sm text-muted-foreground">
+                  <div>
+                    <h4 className="font-semibold text-foreground">
+                      17-01-2025 – Day 1
+                    </h4>
+                    <ul className="list-disc list-inside space-y-1 mt-2">
+                      <li>10:00 AM – Kickoff & Problem Reveal</li>
+                      <li>11:00 AM – Team networking icebreaker</li>
+                      <li>6:00 PM – Mid Check-in (mentor progress round)</li>
+                      <li>11:00 PM – Fun mini challenge / quiz</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-foreground">
+                      18-01-2025 – Day 2
+                    </h4>
+                    <ul className="list-disc list-inside space-y-1 mt-2">
+                      <li>10:00 AM – Submission Deadline</li>
+                      <li>11:00 AM – 3:00 PM – Judging</li>
+                      <li>4:00 PM – Results & Closing</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </GlowCard>
           </motion.div>

@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { NeonButton } from "@/components/ui/NeonButton";
 import { useNavigate } from "react-router-dom";
+import { MapPin } from "lucide-react";
 import {
   useMousePosition,
   useFloatingAnimation,
@@ -21,6 +22,17 @@ export function HeroSection() {
   });
 
   const navigate = useNavigate();
+
+  const scrollToSection = (href: string) => {
+    if (href.startsWith("#")) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else if (href.startsWith("/")) {
+      navigate(href);
+    }
+  };
 
   const springConfig = { stiffness: 100, damping: 30 };
   const y = useSpring(
@@ -230,7 +242,7 @@ export function HeroSection() {
           animate={{ x: mouse.x * 0.2, y: mouse.y * 0.2 }}
           transition={{ type: "spring", stiffness: 100, damping: 20 }}
         >
-          <span className="block text-foreground">Vibe Coding Challenge</span>
+          <span className="block text-foreground">Vibe Coding Hackathon</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -240,7 +252,18 @@ export function HeroSection() {
           animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
           transition={{ type: "spring", stiffness: 100, damping: 20 }}
         >
-          Code. Create. Connect. — Offline @Brocamp Kochi
+          Code. Create. Connect. — Offline
+          <a
+            href="#map"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("#map");
+            }}
+            className="inline-flex items-center gap-1 text-primary no-underline hover:text-primary/80 transition-colors"
+          >
+            <MapPin className="w-5 h-5" />
+            Brototype Kochi
+          </a>
         </motion.p>
 
         {/* CTA Buttons */}
@@ -282,7 +305,7 @@ export function HeroSection() {
         >
           {[
             { value: "500+", label: "Participants" },
-            { value: "$50K", label: "In Prizes" },
+            { value: "₹500K", label: "In Prizes" },
             { value: "24h", label: "Of Coding" },
             { value: "100+", label: "Projects" },
           ].map((stat, index) => (

@@ -163,7 +163,7 @@ export default function RegistrationPage() {
               Vibe Coding Challenge — Team Registration
             </h1>
             <p className="text-sm text-muted-foreground mb-4">
-              Code. Create. Connect. — Offline @ Brocamp Kochi • 24 Hours
+              Code. Create. Connect. — Offline @Brototype Kochi • 24 Hours
             </p>
 
             {/* Landscape layout */}
@@ -176,14 +176,8 @@ export default function RegistrationPage() {
                     are on the main event page.
                   </p>
                   <div className="mt-3 space-y-2">
-                    <a href="/" className="text-sm text-primary underline">
+                    <a href="/" className="text-sm text-primary no-underline">
                       View Event Details
-                    </a>
-                    <a
-                      href="/"
-                      className="text-sm text-muted-foreground underline"
-                    >
-                      Rules & Schedule
                     </a>
                   </div>
                 </div>

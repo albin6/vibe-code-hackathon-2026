@@ -2,13 +2,17 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Sparkles, Zap, Globe, Rocket, Code2, Trophy } from "lucide-react";
 import { GlowCard } from "@/components/ui/GlowCard";
-import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
+import {
+  useMousePosition,
+  useFloatingAnimation,
+} from "@/hooks/useParallaxEffects";
 
 const experiences = [
   {
     icon: Sparkles,
     title: "AI-Powered Development",
-    description: "Leverage cutting-edge AI tools to accelerate your workflow and build smarter applications.",
+    description:
+      "Leverage cutting-edge AI tools to accelerate your workflow and build smarter applications.",
     gradient: "from-cyan-500/20 to-blue-600/20",
     iconBg: "bg-cyan-500/10",
     iconColor: "text-cyan-400",
@@ -16,7 +20,8 @@ const experiences = [
   {
     icon: Zap,
     title: "Lightning Fast Performance",
-    description: "Build applications that scale to millions of users with optimized performance.",
+    description:
+      "Build applications that scale to millions of users with optimized performance.",
     gradient: "from-yellow-500/20 to-orange-600/20",
     iconBg: "bg-yellow-500/10",
     iconColor: "text-yellow-400",
@@ -24,7 +29,8 @@ const experiences = [
   {
     icon: Globe,
     title: "Global Community",
-    description: "Connect with developers from around the world and expand your network.",
+    description:
+      "Connect with developers from around the world and expand your network.",
     gradient: "from-green-500/20 to-emerald-600/20",
     iconBg: "bg-green-500/10",
     iconColor: "text-green-400",
@@ -32,7 +38,8 @@ const experiences = [
   {
     icon: Rocket,
     title: "Launch Your Vision",
-    description: "Turn your ideas into reality in just 48 hours with expert guidance.",
+    description:
+      "Turn your ideas into reality in just 24 hours with expert guidance.",
     gradient: "from-purple-500/20 to-pink-600/20",
     iconBg: "bg-purple-500/10",
     iconColor: "text-purple-400",
@@ -40,7 +47,8 @@ const experiences = [
   {
     icon: Code2,
     title: "Clean Code Practices",
-    description: "Write maintainable, scalable, and beautiful code with industry best practices.",
+    description:
+      "Write maintainable, scalable, and beautiful code with industry best practices.",
     gradient: "from-pink-500/20 to-rose-600/20",
     iconBg: "bg-pink-500/10",
     iconColor: "text-pink-400",
@@ -48,7 +56,8 @@ const experiences = [
   {
     icon: Trophy,
     title: "Win Big Prizes",
-    description: "Compete for $50,000 in prizes and exclusive career opportunities.",
+    description:
+      "Compete for ₹500,000 in prizes and exclusive career opportunities.",
     gradient: "from-amber-500/20 to-yellow-600/20",
     iconBg: "bg-amber-500/10",
     iconColor: "text-amber-400",
@@ -63,13 +72,22 @@ export function ExperienceSection() {
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const springConfig = { stiffness: 100, damping: 30 };
-  const backgroundY1 = useSpring(useTransform(scrollYProgress, [0, 1], [-50, 200]), springConfig);
-  const backgroundY2 = useSpring(useTransform(scrollYProgress, [0, 1], [50, -150]), springConfig);
-  const gridY = useSpring(useTransform(scrollYProgress, [0, 1], [0, 100]), springConfig);
+  const backgroundY1 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [-50, 200]),
+    springConfig
+  );
+  const backgroundY2 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [50, -150]),
+    springConfig
+  );
+  const gridY = useSpring(
+    useTransform(scrollYProgress, [0, 1], [0, 100]),
+    springConfig
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -123,9 +141,12 @@ export function ExperienceSection() {
         />
         <motion.div
           className="absolute top-1/2 left-1/2 w-[700px] h-[700px] bg-accent/5 rounded-full blur-[150px]"
-          style={{ 
-            x: "-50%", 
-            y: useSpring(useTransform(scrollYProgress, [0, 1], ["-50%", "-30%"]), springConfig)
+          style={{
+            x: "-50%",
+            y: useSpring(
+              useTransform(scrollYProgress, [0, 1], ["-50%", "-30%"]),
+              springConfig
+            ),
           }}
         />
       </div>
@@ -165,7 +186,8 @@ export function ExperienceSection() {
             animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
           >
-            More than just a hackathon — it's a launchpad for your next big idea.
+            More than just a hackathon — it's a launchpad for your next big
+            idea.
           </motion.p>
         </motion.div>
 
@@ -178,7 +200,13 @@ export function ExperienceSection() {
           viewport={{ once: true, margin: "-100px" }}
         >
           {experiences.map((exp, index) => (
-            <ExperienceCard key={exp.title} {...exp} index={index} mouse={mouse} variants={cardVariants} />
+            <ExperienceCard
+              key={exp.title}
+              {...exp}
+              index={index}
+              mouse={mouse}
+              variants={cardVariants}
+            />
           ))}
         </motion.div>
       </div>
@@ -209,7 +237,7 @@ function ExperienceCard({
   mouse,
   variants,
 }: ExperienceCardProps) {
-  const xMultiplier = (index % 3 - 1) * 0.15;
+  const xMultiplier = ((index % 3) - 1) * 0.15;
 
   return (
     <motion.div
@@ -217,7 +245,7 @@ function ExperienceCard({
       whileHover={{
         scale: 1.04,
         y: -10,
-        transition: { duration: 0.3, ease: "easeOut" }
+        transition: { duration: 0.3, ease: "easeOut" },
       }}
       animate={{
         x: mouse.x * xMultiplier,
@@ -226,7 +254,9 @@ function ExperienceCard({
       transition={{ type: "spring", stiffness: 150, damping: 20 }}
     >
       <GlowCard
-        variant={index % 3 === 0 ? "cyan" : index % 3 === 1 ? "purple" : "magenta"}
+        variant={
+          index % 3 === 0 ? "cyan" : index % 3 === 1 ? "purple" : "magenta"
+        }
         className="group h-full relative overflow-hidden"
       >
         {/* Gradient overlay on hover */}

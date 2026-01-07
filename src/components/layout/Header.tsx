@@ -81,7 +81,7 @@ export function Header() {
             </motion.div>
             <div>
               <span className="font-display font-semibold text-lg">
-                Vibe <span className="text-primary">Coding</span> Challenge
+                Vibe <span className="text-primary">Coding</span> Hackathon
               </span>
               <div className="text-xs text-muted-foreground hidden sm:block">
                 Code. Create. Connect.
