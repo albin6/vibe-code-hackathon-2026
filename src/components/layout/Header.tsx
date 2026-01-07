@@ -5,20 +5,26 @@ import { Menu, X, Zap } from "lucide-react";
 import { NeonButton } from "@/components/ui/NeonButton";
 import { cn } from "@/lib/utils";
 import { useMousePosition } from "@/hooks/useParallaxEffects";
-
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Highlights", href: "#highlights" },
-  { label: "Schedule", href: "#schedule" },
-  { label: "Rules", href: "#rules" },
-  { label: "Register", href: "/registration" },
-];
+import { useLocation } from "react-router-dom";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mouse = useMousePosition(0.5);
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const navLinks = [
+    {
+      label: "Home",
+      href: location.pathname === "/registration" ? "/" : "#home",
+    },
+    { label: "Highlights", href: "#highlights" },
+    { label: "Schedule", href: "#schedule" },
+    { label: "Rules", href: "#rules" },
+    { label: "Register", href: "/registration" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {

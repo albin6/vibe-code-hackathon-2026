@@ -69,24 +69,33 @@ export function EventInfoSection() {
 
       <div className="container mx-auto px-4">
         <motion.div
-          className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-start"
+          className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
         >
-          <motion.div variants={cardVariants} animate={{ x: mouse.x * 0.06 }}>
-            <GlowCard variant="default" className="p-6 h-full">
-              <div className="flex items-center gap-3 mb-3">
-                <Zap className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">Event Snapshot</h3>
+          <motion.div
+            variants={cardVariants}
+            className="h-full"
+            animate={{ x: mouse.x * 0.06 }}
+          >
+            <GlowCard
+              variant="default"
+              className="p-6 h-full flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <Zap className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Event Snapshot</h3>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Vibe Coding Challenge — Code. Create. Connect.
+                </p>
+                <p className="text-sm text-muted-foreground mt-3">
+                  Offline @ Brocamp Kochi • 24 Hours
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Vibe Coding Challenge — Code. Create. Connect.
-              </p>
-              <p className="text-sm text-muted-foreground mt-3">
-                Offline @ Brocamp Kochi • 24 Hours
-              </p>
               <div className="mt-4">
                 <NeonButton
                   size="sm"
@@ -98,40 +107,60 @@ export function EventInfoSection() {
             </GlowCard>
           </motion.div>
 
-          <motion.div variants={cardVariants} animate={{ x: mouse.x * -0.06 }}>
-            <GlowCard variant="default" className="p-6 h-full">
-              <div className="flex items-center gap-3 mb-3">
-                <Calendar className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">Schedule</h3>
+          <motion.div
+            variants={cardVariants}
+            className="h-full"
+            animate={{ x: mouse.x * -0.06 }}
+          >
+            <GlowCard
+              variant="default"
+              className="p-6 h-full flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <Calendar className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Schedule</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li>Day 1, 10:00 AM – Kickoff & Problem Reveal</li>
+                  <li>Day 1, 11:00 AM – Team networking icebreaker</li>
+                  <li>Day 1, 6:00 PM – Mid Check-in (mentor progress round)</li>
+                  <li>Day 1, 11:00 PM – Fun mini challenge/quiz</li>
+                  <li>Day 2, 10:00 AM – Submission Deadline</li>
+                  <li>Day 2, 11:00 AM – 3:00 PM – Judging</li>
+                  <li>Day 2, 4:00 PM – Results & Closing</li>
+                </ul>
               </div>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>Day 1, 10:00 AM – Kickoff & Problem Reveal</li>
-                <li>Day 1, 11:00 AM – Team networking icebreaker</li>
-                <li>Day 1, 6:00 PM – Mid Check-in (mentor progress round)</li>
-                <li>Day 1, 11:00 PM – Fun mini challenge/quiz</li>
-                <li>Day 2, 10:00 AM – Submission Deadline</li>
-                <li>Day 2, 11:00 AM – 3:00 PM – Judging</li>
-                <li>Day 2, 4:00 PM – Results & Closing</li>
-              </ul>
             </GlowCard>
           </motion.div>
 
-          <motion.div variants={cardVariants} animate={{ x: mouse.x * 0.04 }}>
-            <GlowCard variant="default" className="p-6 h-full">
-              <div className="flex items-center gap-3 mb-3">
-                <Star className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold">Rules & Evaluation</h3>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                <p className="mb-2">Rules:</p>
-                <ul className="list-disc list-inside">
-                  <li>Any tech stack / AI tools allowed</li>
-                  <li>Code must be pushed to GitHub</li>
-                  <li>Working demo link required for submission</li>
-                </ul>
+          <motion.div
+            variants={cardVariants}
+            className="h-full"
+            animate={{ x: mouse.x * 0.04 }}
+          >
+            <GlowCard
+              variant="default"
+              className="p-6 h-full flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <Star className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Rules & Evaluation</h3>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  <p className="mb-2">Rules:</p>
+                  <ul className="list-disc list-inside">
+                    <li>Any tech stack / AI tools allowed</li>
+                    <li>Code must be pushed to GitHub</li>
+                    <li>Working demo link required for submission</li>
+                  </ul>
 
-                <p className="mt-3 mb-2">Evaluation:</p>
-                <div>UI/UX, Code Quality, Innovation, Tech Implementation</div>
+                  <p className="mt-3 mb-2">Evaluation:</p>
+                  <div>
+                    UI/UX, Code Quality, Innovation, Tech Implementation
+                  </div>
+                </div>
               </div>
             </GlowCard>
           </motion.div>
