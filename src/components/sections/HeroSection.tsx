@@ -220,7 +220,7 @@ export function HeroSection() {
           transition={{ type: "spring", stiffness: 150, damping: 15 }}
         >
           <Sparkles className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium text-primary">2025 Edition</span>
+          <span className="text-sm font-medium text-primary">2026 Edition</span>
         </motion.div>
 
         {/* Main Title */}
@@ -230,13 +230,7 @@ export function HeroSection() {
           animate={{ x: mouse.x * 0.2, y: mouse.y * 0.2 }}
           transition={{ type: "spring", stiffness: 100, damping: 20 }}
         >
-          <span className="block text-foreground">Vibe Coding</span>
-          <motion.span
-            className="block gradient-text"
-            animate={{ x: mouse.x * 0.15, y: mouse.y * 0.15 }}
-          >
-            Hackathon
-          </motion.span>
+          <span className="block text-foreground">Vibe Coding Challenge</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -246,8 +240,7 @@ export function HeroSection() {
           animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
           transition={{ type: "spring", stiffness: 100, damping: 20 }}
         >
-          48 hours of innovation, creativity, and code. Build the future with
-          the world's best developers.
+          Code. Create. Connect. — Offline @Brocamp Kochi
         </motion.p>
 
         {/* CTA Buttons */}
@@ -266,13 +259,19 @@ export function HeroSection() {
             </NeonButton>
           </motion.div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
-            <NeonButton
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto"
+            <a
+              href="https://www.brototype.com/"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              View Last Year
-            </NeonButton>
+              <NeonButton
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto"
+              >
+                Visit Our Website
+              </NeonButton>
+            </a>
           </motion.div>
         </motion.div>
 
@@ -284,7 +283,7 @@ export function HeroSection() {
           {[
             { value: "500+", label: "Participants" },
             { value: "$50K", label: "In Prizes" },
-            { value: "48h", label: "Of Coding" },
+            { value: "24h", label: "Of Coding" },
             { value: "100+", label: "Projects" },
           ].map((stat, index) => (
             <motion.div

@@ -159,76 +159,94 @@ export default function RegistrationPage() {
       <main className="py-12">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="bg-card p-8 rounded-lg shadow-lg">
-            <h1 className="font-display text-2xl mb-4">
-              Participant Registration
+            <h1 className="font-display text-2xl mb-2">
+              Vibe Coding Challenge — Team Registration
             </h1>
+            <p className="text-sm text-muted-foreground mb-4">
+              Code. Create. Connect. — Offline @ Brocamp Kochi • 24 Hours
+            </p>
 
             {/* Landscape layout */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
               <aside className="md:col-span-1 md:sticky md:top-24 md:w-80">
                 <div className="p-5 border rounded-lg mb-5 bg-card/60 shadow-sm">
-                  <h3 className="font-semibold text-lg">Registration</h3>
+                  <h3 className="font-semibold text-lg">Event Info</h3>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Follow the steps to complete team registration.
+                    Quick links: full rules, schedule, and submission checklist
+                    are on the main event page.
                   </p>
-                  <ol className="mt-5 space-y-3">
-                    <li className="flex items-start gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          step === 1
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted/40"
-                        }`}
-                      >
-                        1
-                      </div>
-                      <div>
-                        <div className="font-medium">Count</div>
-                        <div className="text-sm text-muted-foreground">
-                          Select number of participants
-                        </div>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          step === 2
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted/40"
-                        }`}
-                      >
-                        2
-                      </div>
-                      <div>
-                        <div className="font-medium">Details</div>
-                        <div className="text-sm text-muted-foreground">
-                          Fill participant information
-                        </div>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                          step === 3
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted/40"
-                        }`}
-                      >
-                        3
-                      </div>
-                      <div>
-                        <div className="font-medium">Review</div>
-                        <div className="text-sm text-muted-foreground">
-                          Confirm & submit payment
-                        </div>
-                      </div>
-                    </li>
-                  </ol>
+                  <div className="mt-3 space-y-2">
+                    <a href="/" className="text-sm text-primary underline">
+                      View Event Details
+                    </a>
+                    <a
+                      href="/"
+                      className="text-sm text-muted-foreground underline"
+                    >
+                      Rules & Schedule
+                    </a>
+                  </div>
                 </div>
 
-                <div className="p-5 border rounded-lg bg-card/60 shadow-sm">
+                <ol className="mt-5 space-y-3">
+                  <li className="flex items-start gap-3">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        step === 1
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted/40"
+                      }`}
+                    >
+                      1
+                    </div>
+                    <div>
+                      <div className="font-medium">Count</div>
+                      <div className="text-sm text-muted-foreground">
+                        Select number of participants
+                      </div>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        step === 2
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted/40"
+                      }`}
+                    >
+                      2
+                    </div>
+                    <div>
+                      <div className="font-medium">Details</div>
+                      <div className="text-sm text-muted-foreground">
+                        Fill participant information
+                      </div>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        step === 3
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted/40"
+                      }`}
+                    >
+                      3
+                    </div>
+                    <div>
+                      <div className="font-medium">Review</div>
+                      <div className="text-sm text-muted-foreground">
+                        Confirm & submit payment
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+
+                <div className="mt-3 p-5 border rounded-lg bg-card/60 shadow-sm">
                   <div className="text-sm text-muted-foreground">
-                    Selected participants
+                    Team Members
                   </div>
                   <div className="mt-3 space-y-2">
                     {getValues().participants?.length ? (
@@ -496,10 +514,10 @@ export default function RegistrationPage() {
 
                         <div className="p-6 border rounded-lg bg-card/70">
                           <h3 className="font-medium mb-2">Payment</h3>
-                          <p className="text-sm text-muted-foreground mb-4">
+                          {/* <p className="text-sm text-muted-foreground mb-4">
                             Placeholder: Payment gateway integration will be
                             added later.
-                          </p>
+                          </p> */}
                           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                             <div className="w-full sm:w-auto">
                               <Button

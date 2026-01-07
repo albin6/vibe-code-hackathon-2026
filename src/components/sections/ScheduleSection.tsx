@@ -1,50 +1,67 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { Calendar, Rocket, Code2, Users, Award, PartyPopper } from "lucide-react";
-import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
+import {
+  Calendar,
+  Rocket,
+  Code2,
+  Users,
+  Award,
+  PartyPopper,
+} from "lucide-react";
+import {
+  useMousePosition,
+  useFloatingAnimation,
+} from "@/hooks/useParallaxEffects";
 
 const scheduleItems = [
   {
     icon: Calendar,
-    date: "March 15, 2025",
-    time: "9:00 AM",
-    title: "Registration Opens",
-    description: "Online registration begins. Secure your spot early!",
-  },
-  {
-    icon: Rocket,
-    date: "April 1, 2025",
+    date: "Day 1",
     time: "10:00 AM",
-    title: "Kickoff Ceremony",
-    description: "Opening keynote, team formation, and challenge reveal.",
-  },
-  {
-    icon: Code2,
-    date: "April 1, 2025",
-    time: "12:00 PM",
-    title: "Hacking Begins",
-    description: "48 hours of non-stop building, learning, and creating.",
+    title: "Kickoff & Problem Reveal",
+    description: "Event opening and challenge announcement.",
   },
   {
     icon: Users,
-    date: "April 2, 2025",
-    time: "2:00 PM",
-    title: "Mentor Sessions",
-    description: "One-on-one guidance from industry experts.",
+    date: "Day 1",
+    time: "11:00 AM",
+    title: "Team networking icebreaker",
+    description: "Meet other teams and mentors for quick introductions.",
   },
   {
-    icon: Award,
-    date: "April 3, 2025",
-    time: "12:00 PM",
-    title: "Submissions Due",
-    description: "Final project submissions and demo preparations.",
+    icon: Calendar,
+    date: "Day 1",
+    time: "6:00 PM",
+    title: "Mid Check-in",
+    description: "Mentor progress round and Q&A.",
   },
   {
     icon: PartyPopper,
-    date: "April 3, 2025",
-    time: "6:00 PM",
-    title: "Awards Ceremony",
-    description: "Winners announced, prizes awarded, celebration!",
+    date: "Day 1",
+    time: "11:00 PM",
+    title: "Fun mini challenge/quiz",
+    description: "A short timed mini-challenge to win prizes.",
+  },
+  {
+    icon: Calendar,
+    date: "Day 2",
+    time: "10:00 AM",
+    title: "Submission Deadline",
+    description: "All teams must submit GitHub repo and demo link.",
+  },
+  {
+    icon: Award,
+    date: "Day 2",
+    time: "11:00 AM - 3:00 PM",
+    title: "Judging",
+    description: "Judges review projects and score based on criteria.",
+  },
+  {
+    icon: Rocket,
+    date: "Day 2",
+    time: "4:00 PM",
+    title: "Results & Closing",
+    description: "Winners announced and closing remarks.",
   },
 ];
 
@@ -56,12 +73,18 @@ export function ScheduleSection() {
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const springConfig = { stiffness: 100, damping: 30 };
-  const backgroundY1 = useSpring(useTransform(scrollYProgress, [0, 1], [-80, 150]), springConfig);
-  const backgroundY2 = useSpring(useTransform(scrollYProgress, [0, 1], [50, -100]), springConfig);
+  const backgroundY1 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [-80, 150]),
+    springConfig
+  );
+  const backgroundY2 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [50, -100]),
+    springConfig
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -75,7 +98,11 @@ export function ScheduleSection() {
   };
 
   return (
-    <section id="schedule" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden bg-muted/30">
+    <section
+      id="schedule"
+      ref={sectionRef}
+      className="relative py-20 md:py-32 overflow-hidden bg-muted/30"
+    >
       {/* Background decorations with enhanced parallax */}
       <motion.div
         className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-accent/8 rounded-full blur-[100px] -translate-y-1/2"
@@ -125,7 +152,8 @@ export function ScheduleSection() {
             animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
           >
-            From registration to celebration, here's everything you need to know.
+            From registration to celebration, here's everything you need to
+            know.
           </motion.p>
         </motion.div>
 
@@ -173,7 +201,16 @@ interface TimelineItemProps {
   mouse: { x: number; y: number };
 }
 
-function TimelineItem({ icon: Icon, date, time, title, description, index, isLeft, mouse }: TimelineItemProps) {
+function TimelineItem({
+  icon: Icon,
+  date,
+  time,
+  title,
+  description,
+  index,
+  isLeft,
+  mouse,
+}: TimelineItemProps) {
   const mouseOffset = isLeft ? mouse.x * 0.15 : -mouse.x * 0.15;
 
   const itemVariants = {
@@ -211,7 +248,9 @@ function TimelineItem({ icon: Icon, date, time, title, description, index, isLef
 
       {/* Content */}
       <motion.div
-        className={`w-full md:w-1/2 pl-10 md:pl-0 ${isLeft ? "md:pr-10 md:text-right" : "md:pl-10"}`}
+        className={`w-full md:w-1/2 pl-10 md:pl-0 ${
+          isLeft ? "md:pr-10 md:text-right" : "md:pl-10"
+        }`}
         animate={{ x: mouseOffset }}
         transition={{ type: "spring", stiffness: 150, damping: 20 }}
       >
@@ -241,7 +280,9 @@ function TimelineItem({ icon: Icon, date, time, title, description, index, isLef
               <span>{time}</span>
             </div>
             <h3 className="font-semibold">{title}</h3>
-            <p className="text-sm text-muted-foreground mt-0.5">{description}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {description}
+            </p>
           </div>
         </motion.div>
       </motion.div>

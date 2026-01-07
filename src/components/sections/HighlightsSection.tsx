@@ -2,7 +2,10 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Clock, Users, Trophy, Globe, Code, Zap } from "lucide-react";
 import { GlowCard } from "@/components/ui/GlowCard";
-import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
+import {
+  useMousePosition,
+  useFloatingAnimation,
+} from "@/hooks/useParallaxEffects";
 
 const highlights = [
   {
@@ -13,13 +16,14 @@ const highlights = [
   },
   {
     icon: Code,
-    title: "AI & Web3 Theme",
-    description: "Focus on cutting-edge technologies shaping the future",
+    title: "AI Innovation Theme",
+    description:
+      "Build intelligent, real-world solutions using modern AI technologies.",
     variant: "purple" as const,
   },
   {
     icon: Users,
-    title: "Teams of 2-4",
+    title: "Teams of 1-4",
     description: "Collaborate with talented developers worldwide",
     variant: "magenta" as const,
   },
@@ -31,8 +35,8 @@ const highlights = [
   },
   {
     icon: Globe,
-    title: "Hybrid Mode",
-    description: "Join online or at our flagship venue in San Francisco",
+    title: "Offline Advantage",
+    description: "Learn in a focused, distraction-free environment.",
     variant: "purple" as const,
   },
   {
@@ -48,12 +52,12 @@ export function HighlightsSection() {
   const mouse = useMousePosition(1);
   const float1 = useFloatingAnimation(0);
   const float2 = useFloatingAnimation(1.5);
-  
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
-  
+
   const springConfig = { stiffness: 100, damping: 30 };
   const backgroundY = useSpring(
     useTransform(scrollYProgress, [0, 1], [-100, 200]),
@@ -87,9 +91,13 @@ export function HighlightsSection() {
   };
 
   return (
-    <section id="highlights" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden">
+    <section
+      id="highlights"
+      ref={sectionRef}
+      className="relative py-20 md:py-32 overflow-hidden"
+    >
       {/* Background decorations with enhanced parallax */}
-      <motion.div 
+      <motion.div
         className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px]"
         style={{ y: backgroundY }}
         animate={{
@@ -98,9 +106,14 @@ export function HighlightsSection() {
         }}
         transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
-      <motion.div 
+      <motion.div
         className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-secondary/8 rounded-full blur-[100px]"
-        style={{ y: useSpring(useTransform(scrollYProgress, [0, 1], [50, -150]), springConfig) }}
+        style={{
+          y: useSpring(
+            useTransform(scrollYProgress, [0, 1], [50, -150]),
+            springConfig
+          ),
+        }}
         animate={{
           x: -mouse.x * 1.2 + float2.y,
           rotate: -float2.rotate,
@@ -114,7 +127,7 @@ export function HighlightsSection() {
           className="text-center mb-12"
           style={{ y: headerY, opacity: headerOpacity }}
         >
-          <motion.span 
+          <motion.span
             className="inline-block px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm font-medium mb-3"
             animate={{ x: mouse.x * 0.3, y: mouse.y * 0.3 }}
             transition={{ type: "spring", stiffness: 150, damping: 15 }}
@@ -122,24 +135,25 @@ export function HighlightsSection() {
           >
             Event Highlights
           </motion.span>
-          <motion.h2 
+          <motion.h2
             className="font-display font-bold text-2xl sm:text-3xl md:text-4xl mb-3"
             animate={{ x: mouse.x * 0.15, y: mouse.y * 0.15 }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
           >
             What Makes Us <span className="gradient-text">Different</span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             className="text-muted-foreground max-w-xl mx-auto"
             animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
           >
-            Experience a hackathon like no other. We've designed every aspect to maximize your creativity.
+            Experience a hackathon like no other. We've designed every aspect to
+            maximize your creativity.
           </motion.p>
         </motion.div>
 
         {/* Highlights Grid with stagger */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           variants={containerVariants}
           initial="hidden"
@@ -171,7 +185,15 @@ interface HighlightCardProps {
   variants: any;
 }
 
-function HighlightCard({ icon: Icon, title, description, variant, index, mouse, variants }: HighlightCardProps) {
+function HighlightCard({
+  icon: Icon,
+  title,
+  description,
+  variant,
+  index,
+  mouse,
+  variants,
+}: HighlightCardProps) {
   const iconColors = {
     cyan: "text-primary",
     purple: "text-secondary",
@@ -185,10 +207,10 @@ function HighlightCard({ icon: Icon, title, description, variant, index, mouse, 
   return (
     <motion.div
       variants={variants}
-      whileHover={{ 
-        scale: 1.03, 
+      whileHover={{
+        scale: 1.03,
         y: -8,
-        transition: { duration: 0.3, ease: "easeOut" }
+        transition: { duration: 0.3, ease: "easeOut" },
       }}
       animate={{
         x: mouse.x * xMultiplier,
@@ -196,12 +218,9 @@ function HighlightCard({ icon: Icon, title, description, variant, index, mouse, 
       }}
       transition={{ type: "spring", stiffness: 150, damping: 20 }}
     >
-      <GlowCard
-        variant={variant}
-        className="group h-full"
-      >
+      <GlowCard variant={variant} className="group h-full">
         <div className="flex items-start gap-3">
-          <motion.div 
+          <motion.div
             className={`p-2.5 rounded-lg bg-muted ${iconColors[variant]}`}
             whileHover={{ scale: 1.2, rotate: 5 }}
             transition={{ type: "spring", stiffness: 300 }}

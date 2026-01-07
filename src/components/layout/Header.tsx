@@ -73,9 +73,14 @@ export function Header() {
             >
               <Zap className="w-6 h-6 text-primary" />
             </motion.div>
-            <span className="font-display font-semibold text-lg">
-              Vibe<span className="text-primary">Hack</span>
-            </span>
+            <div>
+              <span className="font-display font-semibold text-lg">
+                Vibe <span className="text-primary">Coding</span> Challenge
+              </span>
+              <div className="text-xs text-muted-foreground hidden sm:block">
+                Code. Create. Connect.
+              </div>
+            </div>
           </motion.a>
 
           {/* Desktop Navigation */}

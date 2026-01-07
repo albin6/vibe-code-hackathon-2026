@@ -5,6 +5,7 @@ import { HeroSection } from "@/components/sections/HeroSection";
 import { HighlightsSection } from "@/components/sections/HighlightsSection";
 import { ExperienceSection } from "@/components/sections/ExperienceSection";
 import { ScheduleSection } from "@/components/sections/ScheduleSection";
+import { EventInfoSection } from "@/components/sections/EventInfoSection";
 import { WinnersSection } from "@/components/sections/WinnersSection";
 import { RulesSection } from "@/components/sections/RulesSection";
 import { CursorGlow } from "@/components/ui/CursorGlow";
@@ -22,6 +23,7 @@ const Index = () => {
         <HighlightsSection />
         <ExperienceSection />
         <ScheduleSection />
+        <EventInfoSection />
         <WinnersSection isVisible={showWinners} />
         <RulesSection />
       </main>

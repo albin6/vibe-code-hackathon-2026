@@ -1,7 +1,10 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Zap, Github, Twitter, Linkedin, Youtube, Mail } from "lucide-react";
-import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
+import {
+  useMousePosition,
+  useFloatingAnimation,
+} from "@/hooks/useParallaxEffects";
 
 const socialLinks = [
   { icon: Github, href: "#", label: "GitHub" },
@@ -26,11 +29,14 @@ export function Footer() {
 
   const { scrollYProgress } = useScroll({
     target: footerRef,
-    offset: ["start end", "end end"]
+    offset: ["start end", "end end"],
   });
 
   const springConfig = { stiffness: 100, damping: 30 };
-  const backgroundY = useSpring(useTransform(scrollYProgress, [0, 1], [50, 0]), springConfig);
+  const backgroundY = useSpring(
+    useTransform(scrollYProgress, [0, 1], [50, 0]),
+    springConfig
+  );
   const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
 
   const containerVariants = {
@@ -57,17 +63,20 @@ export function Footer() {
   };
 
   return (
-    <footer ref={footerRef} className="relative border-t border-border/50 overflow-hidden">
+    <footer
+      ref={footerRef}
+      className="relative border-t border-border/50 overflow-hidden"
+    >
       {/* Glow divider */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
-      <motion.div 
+      <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-8 bg-primary/10 blur-xl"
         animate={{ x: mouse.x }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
       />
 
       {/* Background orbs with enhanced parallax */}
-      <motion.div 
+      <motion.div
         className="absolute -top-32 -left-32 w-[300px] h-[300px] bg-primary/8 rounded-full blur-[100px]"
         style={{ y: backgroundY }}
         animate={{
@@ -76,7 +85,7 @@ export function Footer() {
         }}
         transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
-      <motion.div 
+      <motion.div
         className="absolute -bottom-32 -right-32 w-[250px] h-[250px] bg-secondary/8 rounded-full blur-[80px]"
         animate={{
           x: -mouse.x * 1.2 + float2.y,
@@ -86,7 +95,7 @@ export function Footer() {
         transition={{ type: "spring", stiffness: 50, damping: 25 }}
       />
 
-      <motion.div 
+      <motion.div
         className="container mx-auto px-4 py-12 md:py-16 relative z-10"
         style={{ opacity }}
         variants={containerVariants}
@@ -97,8 +106,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
           {/* Brand */}
           <motion.div variants={itemVariants}>
-            <motion.a 
-              href="#home" 
+            <motion.a
+              href="#home"
               className="flex items-center gap-2 mb-4 group"
               animate={{ x: mouse.x * 0.15, y: mouse.y * 0.15 }}
               transition={{ type: "spring", stiffness: 150, damping: 15 }}
@@ -114,11 +123,13 @@ export function Footer() {
                 <div className="absolute inset-0 blur-md bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <span className="font-display font-bold text-xl tracking-wider">
-                VIBE<span className="text-primary">HACK</span>
+                Vibe <span className="text-primary">Coding</span> Challenge
               </span>
             </motion.a>
             <p className="text-muted-foreground text-sm max-w-xs">
-              The premier hackathon for developers who want to push boundaries and create the future.
+              Code. Create. Connect. — Offline @ Brocamp Kochi • 24 Hours.
+              Judges: Panel of 5 industry experts. Submission: GitHub repo,
+              README, working demo link, demo video.
             </p>
           </motion.div>
 
@@ -127,7 +138,7 @@ export function Footer() {
             <h4 className="font-display font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               {footerLinks.map((link, index) => (
-                <motion.li 
+                <motion.li
                   key={link.label}
                   animate={{ x: mouse.x * 0.08 * (index + 1) }}
                   transition={{ type: "spring", stiffness: 150, damping: 15 }}
@@ -154,9 +165,9 @@ export function Footer() {
                   href={social.href}
                   aria-label={social.label}
                   className="p-2 rounded-lg bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-200"
-                  animate={{ 
-                    x: mouse.x * 0.12 * (index - 2), 
-                    y: mouse.y * 0.08 
+                  animate={{
+                    x: mouse.x * 0.12 * (index - 2),
+                    y: mouse.y * 0.08,
                   }}
                   transition={{ type: "spring", stiffness: 150, damping: 15 }}
                   whileHover={{ scale: 1.2, y: -5 }}
@@ -167,13 +178,14 @@ export function Footer() {
               ))}
             </div>
             <p className="text-muted-foreground text-sm">
-              Follow us for updates, announcements, and behind-the-scenes content.
+              Follow us for updates, announcements, and behind-the-scenes
+              content.
             </p>
           </motion.div>
         </div>
 
         {/* Bottom bar */}
-        <motion.div 
+        <motion.div
           className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -181,17 +193,22 @@ export function Footer() {
           transition={{ delay: 0.5, duration: 0.6 }}
         >
           <p className="text-muted-foreground text-sm text-center md:text-left">
-            © {new Date().getFullYear()} VibeHack. All rights reserved.
+            © {new Date().getFullYear()} Vibe Coding Challenge. All rights
+            reserved.
           </p>
-          <motion.p 
+          <motion.p
             className="text-muted-foreground text-sm"
             whileHover={{ scale: 1.05 }}
           >
-            Made with <motion.span 
+            Made with{" "}
+            <motion.span
               className="text-accent inline-block"
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
-            >♥</motion.span> by the VibeHack Team
+            >
+              ♥
+            </motion.span>{" "}
+            by the Vibe Coding Team
           </motion.p>
         </motion.div>
       </motion.div>

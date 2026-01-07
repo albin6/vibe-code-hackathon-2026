@@ -2,7 +2,10 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { CheckCircle2, Users, FileCode, Scale, Star } from "lucide-react";
 import { GlowCard } from "@/components/ui/GlowCard";
-import { useMousePosition, useFloatingAnimation } from "@/hooks/useParallaxEffects";
+import {
+  useMousePosition,
+  useFloatingAnimation,
+} from "@/hooks/useParallaxEffects";
 
 const ruleCategories = [
   {
@@ -19,11 +22,9 @@ const ruleCategories = [
     icon: FileCode,
     title: "Submission Rules",
     rules: [
-      "All code must be written during the hackathon period",
-      "Use of open-source libraries and APIs is permitted",
-      "Projects must include a working demo or prototype",
-      "Submission must include source code repository access",
-      "Documentation and presentation slides are required",
+      "Any tech stack / AI tools allowed",
+      "Code must be pushed to GitHub",
+      "Working demo link required for submission",
     ],
   },
   {
@@ -38,13 +39,13 @@ const ruleCategories = [
   },
   {
     icon: Star,
-    title: "Evaluation Criteria",
+    title: "Judging Criteria (100 pts)",
     rules: [
-      "Innovation & Creativity (25%)",
-      "Technical Implementation (25%)",
-      "Design & User Experience (20%)",
-      "Potential Impact (15%)",
-      "Presentation Quality (15%)",
+      "Innovation & Creativity – 20 pts",
+      "Functionality / Tech Implementation – 20 pts",
+      "Impact & Relevance – 20 pts",
+      "UI/UX & Design – 20 pts",
+      "Presentation / Pitch – 20 pts",
     ],
   },
 ];
@@ -57,12 +58,18 @@ export function RulesSection() {
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const springConfig = { stiffness: 100, damping: 30 };
-  const backgroundY1 = useSpring(useTransform(scrollYProgress, [0, 1], [-60, 120]), springConfig);
-  const backgroundY2 = useSpring(useTransform(scrollYProgress, [0, 1], [40, -80]), springConfig);
+  const backgroundY1 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [-60, 120]),
+    springConfig
+  );
+  const backgroundY2 = useSpring(
+    useTransform(scrollYProgress, [0, 1], [40, -80]),
+    springConfig
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -89,7 +96,11 @@ export function RulesSection() {
   };
 
   return (
-    <section id="rules" ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden bg-muted/30">
+    <section
+      id="rules"
+      ref={sectionRef}
+      className="relative py-20 md:py-32 overflow-hidden bg-muted/30"
+    >
       {/* Background decorations with enhanced parallax */}
       <motion.div
         className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px]"
@@ -139,7 +150,8 @@ export function RulesSection() {
             animate={{ x: mouse.x * 0.1, y: mouse.y * 0.1 }}
             transition={{ type: "spring", stiffness: 100, damping: 20 }}
           >
-            Please review the following guidelines to ensure a fair and enjoyable experience for everyone.
+            Please review the following guidelines to ensure a fair and
+            enjoyable experience for everyone.
           </motion.p>
         </motion.div>
 
@@ -175,7 +187,14 @@ interface RuleCardProps {
   variants: any;
 }
 
-function RuleCard({ icon: Icon, title, rules, index, mouse, variants }: RuleCardProps) {
+function RuleCard({
+  icon: Icon,
+  title,
+  rules,
+  index,
+  mouse,
+  variants,
+}: RuleCardProps) {
   const mouseMultiplier = index % 2 === 0 ? 0.12 : -0.12;
 
   const ruleVariants = {
@@ -197,7 +216,7 @@ function RuleCard({ icon: Icon, title, rules, index, mouse, variants }: RuleCard
       whileHover={{
         scale: 1.02,
         y: -8,
-        transition: { duration: 0.3, ease: "easeOut" }
+        transition: { duration: 0.3, ease: "easeOut" },
       }}
       animate={{
         x: mouse.x * mouseMultiplier,
@@ -205,7 +224,10 @@ function RuleCard({ icon: Icon, title, rules, index, mouse, variants }: RuleCard
       }}
       transition={{ type: "spring", stiffness: 150, damping: 20 }}
     >
-      <GlowCard variant="default" className="h-full group hover:border-primary/40 transition-colors duration-300">
+      <GlowCard
+        variant="default"
+        className="h-full group hover:border-primary/40 transition-colors duration-300"
+      >
         <div className="flex items-center gap-3 mb-5">
           <motion.div
             className="p-2.5 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors duration-300"
