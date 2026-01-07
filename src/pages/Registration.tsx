@@ -21,16 +21,30 @@ import { toast } from "@/components/ui/use-toast";
 const genders = ["Male", "Female", "Other"] as const;
 
 const ParticipantSchema = z.object({
-  fullName: z.string().min(1, "Full name is required"),
+  fullName: z
+    .string()
+    .min(1, "Full name is required")
+    .regex(
+      /^[A-Za-z ]+$/,
+      "Full name can only contain English letters and spaces"
+    ),
   age: z
     .number({ invalid_type_error: "Age is required" })
     .int()
     .min(10, "Minimum age is 10")
     .max(99, "Maximum age is 99"),
   gender: z.enum(genders, { required_error: "Gender is required" }),
-  // Phones are optional on each participant; we'll enforce captain's primary phone below
-  primaryPhone: z.string().optional().or(z.literal("")),
-  secondaryPhone: z.string().optional().or(z.literal("")),
+  // Phones are optional on each participant; validate digits and up to 10 chars
+  primaryPhone: z
+    .string()
+    .regex(/^[0-9]{1,10}$/, "Phone must contain only digits (max 10 digits)")
+    .optional()
+    .or(z.literal("")),
+  secondaryPhone: z
+    .string()
+    .regex(/^[0-9]{1,10}$/, "Phone must contain only digits (max 10 digits)")
+    .optional()
+    .or(z.literal("")),
 });
 
 const RegistrationSchema = z
@@ -39,11 +53,12 @@ const RegistrationSchema = z
     (data) => {
       const captain = data.participants[0];
       return Boolean(
-        captain?.primaryPhone && captain.primaryPhone.trim().length > 0
+        captain?.primaryPhone && /^[0-9]{1,10}$/.test(captain.primaryPhone)
       );
     },
     {
-      message: "Primary phone for team captain is required",
+      message:
+        "Primary phone for team captain is required and must contain only digits (max 10)",
       path: ["participants", "0", "primaryPhone"],
     }
   );
@@ -338,6 +353,8 @@ export default function RegistrationPage() {
                                       <FormControl>
                                         <Input
                                           placeholder="Full name"
+                                          pattern="[A-Za-z ]+"
+                                          title="Only A-Z letters and spaces are allowed"
                                           {...field}
                                         />
                                       </FormControl>
@@ -413,6 +430,10 @@ export default function RegistrationPage() {
                                         </FormLabel>
                                         <FormControl>
                                           <Input
+                                            type="tel"
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            maxLength={10}
                                             placeholder="Primary phone"
                                             {...field}
                                           />
@@ -434,6 +455,10 @@ export default function RegistrationPage() {
                                         </FormLabel>
                                         <FormControl>
                                           <Input
+                                            type="tel"
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            maxLength={10}
                                             placeholder="Secondary phone"
                                             {...field}
                                           />
