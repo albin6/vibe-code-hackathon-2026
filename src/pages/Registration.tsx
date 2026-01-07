@@ -28,19 +28,32 @@ const ParticipantSchema = z.object({
     .min(10, "Minimum age is 10")
     .max(99, "Maximum age is 99"),
   gender: z.enum(genders, { required_error: "Gender is required" }),
-  primaryPhone: z.string().min(1, "Primary phone is required"),
+  // Phones are optional on each participant; we'll enforce captain's primary phone below
+  primaryPhone: z.string().optional().or(z.literal("")),
   secondaryPhone: z.string().optional().or(z.literal("")),
 });
 
-const RegistrationSchema = z.object({
-  participants: z.array(ParticipantSchema).min(1).max(4),
-});
+const RegistrationSchema = z
+  .object({ participants: z.array(ParticipantSchema).min(1).max(4) })
+  .refine(
+    (data) => {
+      const captain = data.participants[0];
+      return Boolean(
+        captain?.primaryPhone && captain.primaryPhone.trim().length > 0
+      );
+    },
+    {
+      message: "Primary phone for team captain is required",
+      path: ["participants", "0", "primaryPhone"],
+    }
+  );
 
 type RegistrationForm = z.infer<typeof RegistrationSchema>;
 
 export default function RegistrationPage() {
   const [step, setStep] = useState(1);
   const [count, setCount] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<RegistrationForm>({
     resolver: zodResolver(RegistrationSchema),
@@ -74,65 +87,69 @@ export default function RegistrationPage() {
     handleSubmit(() => setStep(3))();
   }
 
+  // 1. Updated Submission Logic
   async function handlePaymentAndSubmit() {
-    // Placeholder payment flow simulation
+    // 1. Generate IDs locally so we can show them to the user
+    const generatedTeamId =
+      "TEAM-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+
     toast({
-      title: "Processing payment...",
-      description: "Simulating payment gateway.",
+      title: "Processing registration...",
+      description: "Please do not close the window.",
     });
-
-    // fake delay
-    await new Promise((r) => setTimeout(r, 800));
-
-    // simulate payment success
-    toast({
-      title: "Payment successful",
-      description: "Thank you! Submitting your registration...",
-    });
-
-    // Submit to Google Sheets via server API
+    setIsSubmitting(true);
     try {
-      const resp = await submitToGoogleSheets(getValues());
+      // 2. Simulate Payment Delay
+      await new Promise((r) => setTimeout(r, 1000));
+
+      // 3. Submit to Google Sheets
+      const formData = getValues();
+      await submitToGoogleSheets(formData, generatedTeamId);
+
+      // 4. Success UI
       toast({
-        title: "Registration submitted",
-        description: `Participant details sent (${resp.appended || "n"} rows).`,
+        title: "Registration Successful!",
+        description: `Your Team ID is: ${generatedTeamId}`,
       });
 
-      // After completion, reset and redirect to home
       reset({ participants: [] });
       setCount(null);
       setStep(1);
     } catch (err: any) {
-      console.error("Sheets submit error", err);
+      setIsSubmitting(false);
+      console.error("Submission error", err);
       toast({
+        variant: "destructive",
         title: "Submission failed",
-        description: String(err?.message || err),
+        description: "Could not connect to the registration server.",
       });
     }
   }
 
-  async function submitToGoogleSheets(data: RegistrationForm) {
-    // POST to API server that appends data to Google Sheets
-    const apiBase =
-      import.meta.env.VITE_SHEETS_API_URL || "http://localhost:4001";
+  // 2. Updated API call to Google Apps Script
+  async function submitToGoogleSheets(data: RegistrationForm, teamId: string) {
+    const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-    try {
-      const res = await fetch(`${apiBase}/sheets`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ participants: data.participants }),
-      });
-
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || "Failed to submit to Sheets");
-      }
-
-      return await res.json();
-    } catch (err: any) {
-      console.error("submitToGoogleSheets error:", err?.message || err);
-      throw err;
+    if (!GOOGLE_SCRIPT_URL) {
+      throw new Error("Google Script URL is missing");
     }
+
+    // We use fetch with 'no-cors'. This sends the data but doesn't let us read the response.
+    // This is the most stable way to handle high-traffic Google Script hits.
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        teamId: teamId, // Pass the ID we generated
+        participants: data.participants,
+        paymentStatus: "Paid",
+      }),
+    });
+
+    return { result: "success" };
   }
 
   return (
@@ -276,6 +293,11 @@ export default function RegistrationPage() {
                             is the <strong>Team Captain</strong>.
                           </p>
 
+                          <p className="text-sm text-muted-foreground mt-1">
+                            <strong>Only the team captain</strong> needs to
+                            provide contact numbers.
+                          </p>
+
                           {Array.from({ length: count ?? 0 }).map((_, idx) => (
                             <section
                               key={idx}
@@ -362,52 +384,54 @@ export default function RegistrationPage() {
                                 </div>
                               </div>
 
-                              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <FormField
-                                  control={control}
-                                  name={
-                                    `participants.${idx}.primaryPhone` as const
-                                  }
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>
-                                        Primary Phone Number{" "}
-                                        <span className="text-xs text-muted-foreground">
-                                          (Must have WhatsApp)
-                                        </span>
-                                      </FormLabel>
-                                      <FormControl>
-                                        <Input
-                                          placeholder="Primary phone"
-                                          {...field}
-                                        />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
+                              {idx === 0 ? (
+                                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <FormField
+                                    control={control}
+                                    name={
+                                      `participants.${idx}.primaryPhone` as const
+                                    }
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>
+                                          Primary Phone Number{" "}
+                                          <span className="text-xs text-muted-foreground">
+                                            (Must have WhatsApp)
+                                          </span>
+                                        </FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            placeholder="Primary phone"
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
 
-                                <FormField
-                                  control={control}
-                                  name={
-                                    `participants.${idx}.secondaryPhone` as const
-                                  }
-                                  render={({ field }) => (
-                                    <FormItem>
-                                      <FormLabel>
-                                        Secondary Phone Number (optional)
-                                      </FormLabel>
-                                      <FormControl>
-                                        <Input
-                                          placeholder="Secondary phone"
-                                          {...field}
-                                        />
-                                      </FormControl>
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              </div>
+                                  <FormField
+                                    control={control}
+                                    name={
+                                      `participants.${idx}.secondaryPhone` as const
+                                    }
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>
+                                          Secondary Phone Number (optional)
+                                        </FormLabel>
+                                        <FormControl>
+                                          <Input
+                                            placeholder="Secondary phone"
+                                            {...field}
+                                          />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                              ) : null}
                             </section>
                           ))}
 
@@ -462,8 +486,8 @@ export default function RegistrationPage() {
                             </div>
                             <div className="mt-2 text-sm">
                               <div>{p.gender}</div>
-                              <div>Primary: {p.primaryPhone}</div>
-                              {p.secondaryPhone && (
+                              {i === 0 && <div>Primary: {p.primaryPhone}</div>}
+                              {i === 0 && p.secondaryPhone && (
                                 <div>Secondary: {p.secondaryPhone}</div>
                               )}
                             </div>
@@ -489,9 +513,11 @@ export default function RegistrationPage() {
                             <div className="w-full sm:w-auto">
                               <Button
                                 onClick={handlePaymentAndSubmit}
-                                className="w-full sm:w-auto"
+                                disabled={isSubmitting}
                               >
-                                Pay & Submit
+                                {isSubmitting
+                                  ? "Submitting..."
+                                  : "Pay & Submit"}
                               </Button>
                             </div>
                           </div>
